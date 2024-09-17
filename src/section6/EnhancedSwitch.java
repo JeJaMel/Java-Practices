@@ -1,4 +1,4 @@
-package seccion6;
+package section6;
 
 public class EnhancedSwitch {
 
