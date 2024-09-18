@@ -24,7 +24,7 @@ public class inputCalculatorAverage {
                 num = sc.nextInt();
                 sum += num;
                 count++;
-            }catch (InputMismatchException e) {
+            } catch (InputMismatchException e) {
                 average = (double) sum / count;
                 System.out.println("SUM = " + sum + " AVG = " + average);
 
