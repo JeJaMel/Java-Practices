@@ -12,6 +12,14 @@ public class BankAccount {
     private String email;
     private String phone_number;
 
+    public BankAccount(int account_number, double balance, String customerName, String email, String phone_number) {
+        this.account_number = account_number;
+        this.balance = balance;
+        this.customerName = customerName;
+        this.email = email;
+        this.phone_number = phone_number;
+    }
+
     public int getAccount_number() {
         return account_number;
     }

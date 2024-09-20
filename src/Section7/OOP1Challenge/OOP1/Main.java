@@ -7,15 +7,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        BankAccount bankAccount = new BankAccount();
+        BankAccount bankAccount = new BankAccount(23412, 411, "Jesus", "JeJaMelDev@gmail.com", "0414-2435491"   );
         boolean action = true;
         int choice = 0;
-
-        bankAccount.setAccount_number(23412);
-        bankAccount.setBalance(411);
-        bankAccount.setCustomerName("Jesus");
-        bankAccount.setEmail("JeJaMelDev@gmail.com");
-        bankAccount.setPhone_number("0414-2435491");
 
         System.out.println(bankAccount.getAccount_number());
 
