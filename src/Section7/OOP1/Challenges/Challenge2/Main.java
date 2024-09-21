@@ -1,4 +1,4 @@
-package Section7.OOP1Challenges.Challenge2;
+package Section7.OOP1.Challenges.Challenge2;
 
 public class Main {
 

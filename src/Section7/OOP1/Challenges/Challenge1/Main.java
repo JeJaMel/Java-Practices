@@ -1,4 +1,4 @@
-package Section7.OOP1Challenges.Challenge1;
+package Section7.OOP1.Challenges.Challenge1;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
