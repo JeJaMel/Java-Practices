@@ -1,4 +1,4 @@
-package Section7.OOP1Challenge.OOP1;
+package Section7.OOP1Challenges.Challenge1;
 
 import java.util.InputMismatchException;
 import java.util.Locale;
