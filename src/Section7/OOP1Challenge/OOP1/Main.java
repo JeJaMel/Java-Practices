@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        BankAccount bankAccount = new BankAccount(23412, 411, "Jesus", "JeJaMelDev@gmail.com", "0414-2435491"   );
+        BankAccount bankAccount = new BankAccount(23412, 411, "Jesus", "JeJaMelDev@gmail.com", "0414-2435491");
         boolean action = true;
         int choice = 0;
 

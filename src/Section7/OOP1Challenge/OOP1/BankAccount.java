@@ -14,7 +14,7 @@ public class BankAccount {
 
     public BankAccount() {
         this(12345, 0, "Default name", "Default email", "Default phone number");
-        System.out.println("");
+        System.out.println("Default values showing...");
     }
 
     public BankAccount(int account_number, double balance, String customerName, String email, String phone_number) {
@@ -23,6 +23,10 @@ public class BankAccount {
         this.customerName = customerName;
         this.email = email;
         this.phone_number = phone_number;
+    }
+
+    public BankAccount(int account_number, String customerName) {
+        this(account_number, 123, customerName, "Default email", "Default phone number" );
     }
 
     public int getAccount_number() {
