@@ -25,8 +25,6 @@ public class Main {
         System.out.println("Ibai holidays weekly pay = " + ThirdEmployee.getDoublePay());
 
 
-
-
     }
 
 

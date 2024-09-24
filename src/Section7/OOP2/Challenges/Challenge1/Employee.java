@@ -1,6 +1,6 @@
 package Section7.OOP2.Challenges.Challenge1;
 
-public class Employee extends Worker{
+public class Employee extends Worker {
 
     private long employeeID;
     private String hireDate;
