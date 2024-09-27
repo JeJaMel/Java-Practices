@@ -1,4 +1,4 @@
-package personal.FirstDBComponent;
+package personal.UniversityProjects.FirstDBComponent;
 
 public class Main {
 
