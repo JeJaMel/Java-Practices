@@ -15,8 +15,8 @@ public class Bed {
         this.quilt = quilt;
     }
 
-    public void make(){
-        System.out.println("Bed is being made");
+    public void make() {
+        System.out.print("Bed -> Making | ");
     }
 
     public String getStyle() {

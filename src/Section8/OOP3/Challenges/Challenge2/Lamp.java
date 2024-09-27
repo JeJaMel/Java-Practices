@@ -2,17 +2,17 @@ package Section8.OOP3.Challenges.Challenge2;
 
 public class Lamp {
     private String style;
-    private boolean Battery;
+    private boolean battery;
     private int globRating;
 
     public Lamp(String style, boolean battery, int globRating) {
         this.style = style;
-        Battery = battery;
+        battery = battery;
         this.globRating = globRating;
     }
 
     public void turnOn() {
-        System.out.println("Turning on the lamp");
+        System.out.print("Lamp -> Turning on");
     }
 
     public String getStyle() {
@@ -20,7 +20,7 @@ public class Lamp {
     }
 
     public boolean isBattery() {
-        return Battery;
+        return battery;
     }
 
     public int getGlobRating() {
