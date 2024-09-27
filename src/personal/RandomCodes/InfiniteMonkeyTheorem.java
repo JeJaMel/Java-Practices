@@ -1,4 +1,4 @@
-package personal;
+package personal.RandomCodes;
 
 import java.util.Random;
 
