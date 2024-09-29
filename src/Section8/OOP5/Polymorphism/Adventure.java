@@ -14,4 +14,8 @@ public class Adventure extends Movie {
                 "Scary Music",
                 "Something bad happens");
     }
+
+    public void watchingAdventure(){
+        System.out.println("Watching Adventure");
+    }
 }
