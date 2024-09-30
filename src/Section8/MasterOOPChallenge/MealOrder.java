@@ -34,15 +34,14 @@ public class MealOrder {
                 System.out.println("Invalid drink size");
             }
         }
-        drink.getAdjustedPrice();
     }
 
     public void printItemizedList() {
-        System.out.println("-".repeat(50));
-        System.out.println(burger.printItem());
+        System.out.println("-".repeat(60));
+        System.out.println(burger.printBurger());
         System.out.println(drink.printItem());
         System.out.println(sideItem.printItem());
-        System.out.println("-".repeat(50));
+        System.out.println("-".repeat(60));
     }
 
     public void getTotalPrice() {

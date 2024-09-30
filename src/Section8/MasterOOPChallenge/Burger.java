@@ -32,12 +32,13 @@ public class Burger extends Item {
         return totalPrice;
     }
 
-    @Override
-    public String printItem() {
+
+    public String printBurger() {
         StringBuilder extrasString = new StringBuilder();
         if (extra1 != null) extrasString.append(extra1.printItem()).append("\n");
         if (extra2 != null) extrasString.append(extra2.printItem()).append("\n");
         if (extra3 != null) extrasString.append(extra3.printItem()).append("\n");
         return super.printItem() + "\nExtras: \n" + extrasString.toString();
     }
+
 }
