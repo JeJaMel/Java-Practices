@@ -1,11 +1,6 @@
 package Section8.MasterOOPChallenge;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Main {
-    private static List<Item> menuItems = new ArrayList<>();
-
 
     public static void main(String[] args) {
 
@@ -19,6 +14,8 @@ public class Main {
         Item extraKetchup = new Item("Topping", 0.50, "Extra Ketchup");
         Item extraOnions = new Item("Topping", 0.50, "Extra Onions");
         Item extraLettuce = new Item("Topping", 0.50, "Extra Lettuce");
+        Item cucumber = new Item("Topping", 0.50, "Cucumber");
+        Item extraCheese = new Item("Topping", 0.50, "Extra Cheese");
 
         Item water = new Item("Drink", 1.00, "Water");
         Item fries = new Item("Fries", 1.50, "Fries");
@@ -31,27 +28,12 @@ public class Main {
         mealOrder2.printItemizedList();
         mealOrder2.getTotalPrice();
 
-        menuItems.add(extraKetchup);
-        menuItems.add(extraOnions);
-        menuItems.add(extraLettuce);
-        menuItems.add(water);
-        menuItems.add(basicDrink);
-        menuItems.add(fries);
-        menuItems.add(basicFries);
-        menuItems.add(basicBurger);
-        menuItems.add(burger);
-
-        printMenu();
-
+        MealOrder mealOrder3 = new MealOrder();
+        mealOrder3.orderDeluxeBurger();
+        mealOrder3.addToppings(extraKetchup, extraOnions, extraLettuce, cucumber, extraCheese);
+        mealOrder3.printDeluxeItemizedList();
+        mealOrder3.getDeluxeTotalPrice();
     }
 
-    public static void printMenu() {
-        System.out.println("\nMenu:");
-        System.out.println("-".repeat(50));
-        for (Item item : menuItems) {
-            System.out.println(item.printItem());
-        }
-        System.out.println("-".repeat(50));
-    }
 
 }
