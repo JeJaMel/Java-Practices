@@ -6,10 +6,10 @@ public class MealOrder {
     private Item drink;
     private Item sideItem;
 
-    Burger basicBurger = new Burger("BURGER", 4.99, "Basic Burger");
-    Item basicDrink = new Item("DRINK", 1.00, "Basic Drink");
-    Item basicFries = new Item("FRIES", 2.00, "Basic Fries");
-    DeluxeBurger deluxeBurger = new DeluxeBurger("BURGER", 9.99, "Deluxe Burger");
+    private Burger basicBurger = new Burger("BURGER", 4.99, "Basic Burger");
+    private Item basicDrink = new Item("DRINK", 1.00, "Basic Drink");
+    private Item basicFries = new Item("FRIES", 2.00, "Basic Fries");
+    private DeluxeBurger deluxeBurger = new DeluxeBurger("BURGER", 9.99, "Deluxe Burger");
 
     public MealOrder() {
         this.burger = basicBurger;
@@ -43,7 +43,7 @@ public class MealOrder {
         }
     }
 
-    public void printItemizedList() {
+    private void printItemizedList(Burger burger) {
         System.out.println("-".repeat(60));
         System.out.println(burger.printBurger());
         System.out.println(drink.printItem());
@@ -51,12 +51,12 @@ public class MealOrder {
         System.out.println("-".repeat(60));
     }
 
+    public void printItemizedList() {
+        printItemizedList(burger);
+    }
+
     public void printDeluxeItemizedList() {
-        System.out.println("-".repeat(60));
-        System.out.println(deluxeBurger.printBurger());
-        System.out.println(drink.printItem());
-        System.out.println(sideItem.printItem());
-        System.out.println("-".repeat(60));
+        printItemizedList(deluxeBurger);
     }
 
     public void getTotalPrice() {
