@@ -34,8 +34,8 @@ public class MealOrder {
     }
 
     public void setDrinkSize(String drinkSize) {
-        if (drink.getType().toUpperCase().equals("DRINK") || drink.getType().toUpperCase().equals("FRIES")) {
-            if (drinkSize.toUpperCase().equals("SMALL") || drinkSize.toUpperCase().equals("MEDIUM") || drinkSize.toUpperCase().equals("BIG")) {
+        if (drink.getType().equalsIgnoreCase("DRINK") || drink.getType().equalsIgnoreCase("FRIES")) {
+            if (drinkSize.equalsIgnoreCase("SMALL") || drinkSize.equalsIgnoreCase("MEDIUM") || drinkSize.equalsIgnoreCase("BIG")) {
                 drink.setSize(drinkSize);
             } else {
                 System.out.println("Invalid drink size");
