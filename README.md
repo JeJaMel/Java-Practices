@@ -10,7 +10,7 @@ This repository contains various Java projects, including exercises and practice
 
 ### Visual Programming (Universidad Rafael Urdaneta)
 - **Course Name:** Visual Programming
-- **Description:** This course focuses on the use of visual interfaces in programming, exploring GUI development, event-driven programming, and the design of interactive applications using Java’s Swing and JavaFX frameworks.
+- **Description:** This course focuses on the use of visual interfaces in programming, exploring GUI development,databases manipulation, event-driven programming, and the design of interactive applications using Java’s Swing and JavaFX frameworks.
 
 ## Project Structure
 
