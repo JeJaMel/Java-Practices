@@ -67,18 +67,16 @@ public class DBComponent {
     public void exe(String schema, String queryName, String[] params) {
         try {
             String sentence = getSentence(schema, queryName);
-            String newSentence = sentence.replace("?", params[0]);
+            sentence = sentence.replace("?", params[0]);
             Connection con = getCnn();
             Statement stmt = con.createStatement();
-            stmt.executeQuery(newSentence);
+            stmt.executeQuery(sentence);
             ResultSet rs = stmt.getResultSet();
             printQuery(rs);
-
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 }
