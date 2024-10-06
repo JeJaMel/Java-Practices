@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         try {
             long startTime = System.currentTimeMillis();
-            int threadNumber = 100000;
+            int threadNumber = 1000;
             MyThreads[] threads = new MyThreads[threadNumber];
 
             for (int i = 1; i <= threadNumber; i++) {
