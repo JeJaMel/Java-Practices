@@ -58,11 +58,11 @@ public class MyThreads extends Thread {
             Connection con;
             con = DriverManager.getConnection(getURL(), getUser(), getPassword());
             if (con != null) {
-                incrementSuccessfulCounter();
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM prod");
                 rs.close();
                 stmt.close();
+                incrementSuccessfulCounter();
             }
             con.close();
         } catch (Exception e) {
