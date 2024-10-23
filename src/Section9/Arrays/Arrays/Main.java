@@ -1,4 +1,4 @@
-package Section9.Arrays;
+package Section9.Arrays.Arrays;
 
 import java.util.Arrays;
 
