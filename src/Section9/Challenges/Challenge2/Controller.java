@@ -22,4 +22,9 @@ public class Controller {
         return arr;
     }
 
+    public int findMin(int[] arr) {
+        Arrays.sort(arr);
+        return arr[0];
+    }
+
 }
