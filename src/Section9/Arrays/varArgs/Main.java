@@ -9,7 +9,7 @@ public class Main {
         System.out.println("=".repeat(20));
         printStuff(3.5, 4.2, 12.9);
         System.out.println("=".repeat(20));
-        printStuff("Hola", "Buenas", "noches");
+        printStuff("Hola", "Buenas", "Noches");
         System.out.println("=".repeat(20));
     }
 
