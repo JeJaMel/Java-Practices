@@ -23,7 +23,6 @@ public class MobilePhone {
         return addedAny;
     }
 
-
     public boolean updateContact(Contact oldContact, Contact newContact) {
         if (!myContacts.contains(oldContact)) {
             System.out.println("Contact not found");
