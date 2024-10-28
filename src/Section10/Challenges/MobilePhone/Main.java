@@ -14,12 +14,7 @@ public class Main {
         Contact jejas = Contact.createContact("Jejas", "3456-789012");
 
         // Add contacts to the mobile phone
-        mobilePhone.addNewContact(pache);
-        mobilePhone.addNewContact(tomas);
-        mobilePhone.addNewContact(marco);
-        mobilePhone.addNewContact(potro);
-        mobilePhone.addNewContact(busta);
-        mobilePhone.addNewContact(jejas);
+        mobilePhone.addNewContact(pache, tomas, marco, potro, busta, jejas);
 
         // Print all contacts
         System.out.println("Initial contact list:");

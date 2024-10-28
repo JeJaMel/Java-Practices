@@ -5,21 +5,24 @@ import java.util.ArrayList;
 public class MobilePhone {
 
     private String myNumber;
-    private ArrayList<Contact> myContacts;
+    private final ArrayList<Contact> myContacts;
 
     public MobilePhone(String myNumber) {
         this.myNumber = myNumber;
         this.myContacts = new ArrayList<>();
     }
 
-    public boolean addNewContact(Contact newContact) {
-        if (myContacts.contains(newContact)) {
-            System.out.println("Contact is already in the list");
-            return false;
+    public boolean addNewContact(Contact... contacts) {
+        boolean addedAny = false;
+        for (Contact contact : contacts) {
+            if (findContact(contact) == -1) {
+                myContacts.add(contact);
+                addedAny = true;
+            }
         }
-        myContacts.add(newContact);
-        return true;
+        return addedAny;
     }
+
 
     public boolean updateContact(Contact oldContact, Contact newContact) {
         if (!myContacts.contains(oldContact)) {
