@@ -10,7 +10,7 @@ import java.util.Properties;
 public class Pool {
 
     private static Pool instance;
-    private static final String CONFIG_PATH = "C:\\\\Users\\\\jjmel\\\\eclipse-workspace\\\\JavaCourse\\\\src\\\\personal\\\\UniversityProjects\\\\ProjectThreads\\\\Connection.properties\"";
+    private static final String CONFIG_PATH = "C:\\\\Users\\\\jjmel\\\\eclipse-workspace\\\\JavaCourse\\\\src\\\\personal\\\\UniversityProjects\\\\ConnectionPool\\\\Connection.properties\"";
 
     private int INITIAL_SIZE;
     private int MAX_SIZE;
