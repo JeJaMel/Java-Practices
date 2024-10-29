@@ -44,5 +44,11 @@ public class Cnn {
         return pool.getPool().poll();
     }
 
+    public void returnConnection() {
+        this.connection = null;
+        pool.getPool().add(connection);
+        pool.getPool().notifyAll();
+
+    }
 
 }
