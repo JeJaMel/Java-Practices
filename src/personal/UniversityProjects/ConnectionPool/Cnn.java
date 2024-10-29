@@ -20,8 +20,8 @@ public class Cnn {
 
 
     public ResultSet exeQuery(String query) throws SQLException {
-        System.out.println("Completed");
         Statement stmt = connection.createStatement();
+        System.out.println("Completed");
         return stmt.executeQuery(query);
     }
 
@@ -45,10 +45,14 @@ public class Cnn {
     }
 
     public void returnConnection() {
-        this.connection = null;
-        pool.getPool().add(connection);
-        pool.getPool().notifyAll();
-
+        if (this.connection != null) {
+            synchronized (pool) {
+                pool.getPool().add(this.connection);
+                pool.notifyAll();
+            }
+            this.connection = null;
+        }
     }
+
 
 }

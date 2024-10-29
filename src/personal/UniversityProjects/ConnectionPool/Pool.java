@@ -93,7 +93,5 @@ public class Pool {
         return props;
     }
 
-    private void initializeConnections() {
 
-    }
 }
