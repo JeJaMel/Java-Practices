@@ -1,7 +1,7 @@
 package personal.UniversityProjects.ConnectionPool;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -10,7 +10,6 @@ import java.util.Properties;
 public class Pool {
 
     private static Pool instance;
-    private static final String CONFIG_PATH = "C:\\\\Users\\\\jjmel\\\\eclipse-workspace\\\\JavaCourse\\\\src\\\\personal\\\\UniversityProjects\\\\ConnectionPool\\\\Connection.properties\"";
 
     private int INITIAL_SIZE;
     private int MAX_SIZE;
@@ -20,7 +19,7 @@ public class Pool {
     private LinkedList<Connection> pool;
     private Cnn con;
 
-    private Pool(Properties prop) throws SQLException, ClassNotFoundException {
+    private Pool(Properties prop) throws SQLException, ClassNotFoundException, IOException {
         this.INITIAL_SIZE = Integer.parseInt(prop.getProperty("INITIAL_SIZE"));
         this.MAX_SIZE = Integer.parseInt(prop.getProperty("MAX_SIZE"));
         this.GROWTH_SIZE = Integer.parseInt(prop.getProperty("GROWTH_SIZE"));
@@ -31,10 +30,15 @@ public class Pool {
         this.DATABASE = prop.getProperty("DATABASE");
 
         this.pool = new LinkedList<>();
+
         for (int i = 0; i < INITIAL_SIZE; i++) {
-            pool.add(con.createConnection());
+            pool.add(createConnection());
         }
 
+    }
+
+    private Connection createConnection() throws ClassNotFoundException, SQLException {
+        return new Cnn(this).createConnection();
     }
 
     public int getINITIAL_SIZE() {
@@ -77,21 +81,25 @@ public class Pool {
         return pool;
     }
 
-    public static Pool getInstance() throws IOException, SQLException, ClassNotFoundException {
+    public static synchronized Pool getInstance() throws IOException, SQLException, ClassNotFoundException {
         if (instance == null) {
-            Properties props = loadProps(CONFIG_PATH);
+            Properties props = loadProps();
             instance = new Pool(props);
         }
         return instance;
     }
 
-    private static Properties loadProps(String configPath) throws IOException {
+    private static Properties loadProps() throws IOException {
         Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream(configPath)) {
-            props.load(fis);
+        try (InputStream input = Pool.class.getResourceAsStream("/personal/UniversityProjects/ConnectionPool/Config.properties")) {
+            if (input == null) {
+                throw new IOException("Unable to find Config.properties");
+            }
+            props.load(input);
         }
         return props;
     }
+
 
 
 }

@@ -7,11 +7,9 @@ public class Main {
             PoolManager poolManager = new PoolManager();
 
             for (int i = 0; i < 100; i++) {
-                MyThreads thread = new MyThreads();
+                MyThreads thread = new MyThreads(poolManager); // Pass PoolManager
                 thread.start();
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

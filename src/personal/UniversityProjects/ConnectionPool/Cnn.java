@@ -1,15 +1,14 @@
 package personal.UniversityProjects.ConnectionPool;
 
-import java.io.IOException;
 import java.sql.*;
 
 public class Cnn {
-
     private Connection connection;
-    private Pool pool;
+    private final Pool pool;
 
-    public Cnn() throws IOException, SQLException, ClassNotFoundException {
-        pool = Pool.getInstance();
+    public Cnn(Pool pool) throws SQLException, ClassNotFoundException {
+        this.pool = pool;
+        this.connection = createConnection();
     }
 
     public Connection createConnection() throws ClassNotFoundException, SQLException {
@@ -18,7 +17,6 @@ public class Cnn {
         return DriverManager.getConnection(pool.getURL(), pool.getUSER(), pool.getPASSWORD());
     }
 
-
     public ResultSet exeQuery(String query) throws SQLException {
         Statement stmt = connection.createStatement();
         System.out.println("Completed");
@@ -26,22 +24,24 @@ public class Cnn {
     }
 
     public Connection getConnection() throws SQLException, ClassNotFoundException {
-        if (pool.getPool().isEmpty() && pool.getCURRENT_SIZE() < pool.getMAX_SIZE()) {
-            int newConnections = Math.min(pool.getGROWTH_SIZE(), pool.getMAX_SIZE() - pool.getCURRENT_SIZE());
-            for (int i = 0; i < newConnections; i++) {
-                pool.getPool().add(createConnection());
+        synchronized (pool) {
+            if (pool.getPool().isEmpty() && pool.getCURRENT_SIZE() < pool.getMAX_SIZE()) {
+                int newConnections = Math.min(pool.getGROWTH_SIZE(), pool.getMAX_SIZE() - pool.getCURRENT_SIZE());
+                for (int i = 0; i < newConnections; i++) {
+                    pool.getPool().add(createConnection());
+                }
+                pool.setCURRENT_SIZE(pool.getCURRENT_SIZE() + newConnections);
+                System.out.println("Pool Size increased to: " + pool.getCURRENT_SIZE());
             }
-            pool.setCURRENT_SIZE(pool.getCURRENT_SIZE() + newConnections);
-            System.out.println("Pool Size increased to: " + pool.getCURRENT_SIZE());
-        }
-        try {
-            while (pool.getPool().isEmpty()) {
-                pool.getPool().wait();
+            try {
+                while (pool.getPool().isEmpty()) {
+                    pool.wait();
+                }
+            } catch (InterruptedException e) {
+                throw new SQLException("Error waiting...", e);
             }
-        } catch (InterruptedException e) {
-            throw new SQLException("Error waiting...", e);
+            return pool.getPool().poll();
         }
-        return pool.getPool().poll();
     }
 
     public void returnConnection() {
@@ -53,6 +53,4 @@ public class Cnn {
             this.connection = null;
         }
     }
-
-
 }

@@ -6,19 +6,23 @@ import java.sql.SQLException;
 
 public class PoolManager {
 
-    private Pool pool;
-    private Cnn connection;
+    private final Pool pool;
 
     public PoolManager() throws IOException, SQLException, ClassNotFoundException {
-        pool = Pool.getInstance();
+        this.pool = Pool.getInstance();
     }
 
     public Connection getConnection() throws IOException, SQLException, ClassNotFoundException {
+        Cnn connection = new Cnn(pool);
         return connection.getConnection();
     }
 
-    public void returnConnection(Connection conn) {
+    public void returnConnection(Cnn connection) {
         connection.returnConnection();
+    }
+
+    public Pool getPool() {
+        return pool;
     }
 
 }
