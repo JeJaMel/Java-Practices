@@ -1,7 +1,4 @@
 package personal.UniversityProjects.ConnectionPool;
 
-public class cnn {
-
-
-
+public class Cnn {
 }

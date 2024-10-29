@@ -1,4 +1,4 @@
 package personal.UniversityProjects.ConnectionPool;
 
-public class main {
+public class Main {
 }

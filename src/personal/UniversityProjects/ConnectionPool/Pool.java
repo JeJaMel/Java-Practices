@@ -1,4 +1,7 @@
 package personal.UniversityProjects.ConnectionPool;
 
-public class poolManager {
+public class Pool {
+
+
+
 }
