@@ -7,6 +7,8 @@ import java.util.Properties;
 public class Pool {
 
     private static Pool instance;
+    private static final String CONFIG_PATH = "C:\\\\Users\\\\jjmel\\\\eclipse-workspace\\\\JavaCourse\\\\src\\\\personal\\\\UniversityProjects\\\\ProjectThreads\\\\Connection.properties\"";
+
     private int INITIAL_SIZE;
     private int MAX_SIZE;
     private int GROWTH_SIZE;
@@ -22,16 +24,23 @@ public class Pool {
         this.DATABASE = prop.getProperty("DATABASE");
     }
 
-    public static Pool getInstance() {
+    public static Pool getInstance() throws IOException {
         if (instance == null) {
-            instance = new Pool(new Properties(System.getProperties()));
+            Properties props = loadProps(CONFIG_PATH);
+            instance = new Pool(props);
         }
         return instance;
     }
 
-    public static Properties loadProps(String configPath) throws IOException {
+    private static Properties loadProps(String configPath) throws IOException {
         Properties props = new Properties();
-        props.load(new FileInputStream(configPath));
+        try (FileInputStream fis = new FileInputStream(configPath)) {
+            props.load(fis);
+        }
         return props;
+    }
+
+    private void initializeConnections() {
+
     }
 }
