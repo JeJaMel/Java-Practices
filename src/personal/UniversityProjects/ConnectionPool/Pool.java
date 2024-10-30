@@ -17,7 +17,7 @@ public class Pool {
     private final String URL, USER, PASSWORD, DATABASE;
     private final LinkedList<Connection> pool;
 
-    private Pool(Properties prop) throws SQLException, ClassNotFoundException, IOException {
+    private Pool(Properties prop) throws SQLException, ClassNotFoundException {
         this.INITIAL_SIZE = Integer.parseInt(prop.getProperty("INITIAL_SIZE"));
         this.MAX_SIZE = Integer.parseInt(prop.getProperty("MAX_SIZE"));
         this.GROWTH_SIZE = Integer.parseInt(prop.getProperty("GROWTH_SIZE"));
@@ -77,7 +77,7 @@ public class Pool {
         return pool;
     }
 
-    public static synchronized Pool getInstance() throws IOException, SQLException, ClassNotFoundException {
+    public static Pool getInstance() throws IOException, SQLException, ClassNotFoundException {
         if (instance == null) {
             Properties props = loadProps();
             instance = new Pool(props);

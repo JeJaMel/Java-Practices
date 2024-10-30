@@ -3,13 +3,12 @@ package personal.UniversityProjects.ConnectionPool;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException {
         long startTime = System.currentTimeMillis();
-        List<MyThreads> threads = new ArrayList<>();
+        var threads = new ArrayList<MyThreads>();
 
         try {
             for (int i = 0; i < 1000; i++) {

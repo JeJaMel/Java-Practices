@@ -5,7 +5,7 @@ import java.sql.*;
 public class Cnn {
     private final Pool pool;
 
-    public Cnn(Pool pool) throws SQLException, ClassNotFoundException {
+    public Cnn(Pool pool) {
         this.pool = pool;
     }
 
@@ -15,5 +15,14 @@ public class Cnn {
         System.out.println("Connection created = " + c);
         return c;
     }
+
+//    public ResultSet exeQuery(String query) throws SQLException {
+//        if (connection == null || connection.isClosed()) {
+//            throw new SQLException("No connection available. Please call toConnect first.");
+//        }
+//        Statement stmt = connection.createStatement();
+//        System.out.println("Executing query: " + query);
+//        return stmt.executeQuery(query);
+//    }
 
 }

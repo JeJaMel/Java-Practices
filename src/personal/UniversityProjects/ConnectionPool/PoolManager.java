@@ -12,7 +12,7 @@ public class PoolManager {
         this.pool = Pool.getInstance();
     }
 
-    public Connection getConnection() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
+    public Connection getConnection() throws SQLException, ClassNotFoundException, InterruptedException {
         synchronized (pool) {
             if (!pool.getPool().isEmpty()) {
                 return pool.getPool().removeFirst();
