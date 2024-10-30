@@ -9,9 +9,7 @@ import java.util.Properties;
 
 public class Pool {
 
-    private static String CONFIG_FILE = "/personal/UniversityProjects/ConnectionPool/Config.properties";
     private static Pool instance;
-    private final int INITIAL_SIZE;
     private final int MAX_SIZE;
     private final int GROWTH_SIZE;
     private int CURRENT_SIZE;
@@ -19,7 +17,7 @@ public class Pool {
     private final LinkedList<Connection> pool;
 
     private Pool(Properties prop) throws SQLException, ClassNotFoundException {
-        this.INITIAL_SIZE = Integer.parseInt(prop.getProperty("INITIAL_SIZE"));
+        int INITIAL_SIZE = Integer.parseInt(prop.getProperty("INITIAL_SIZE"));
         this.MAX_SIZE = Integer.parseInt(prop.getProperty("MAX_SIZE"));
         this.GROWTH_SIZE = Integer.parseInt(prop.getProperty("GROWTH_SIZE"));
         this.CURRENT_SIZE = INITIAL_SIZE;
@@ -88,6 +86,7 @@ public class Pool {
 
     private static Properties loadProps() throws IOException {
         Properties props = new Properties();
+        String CONFIG_FILE = "/personal/UniversityProjects/ConnectionPool/Config.properties";
         try (InputStream input = Pool.class.getResourceAsStream(CONFIG_FILE)) {
             if (input == null) {
                 throw new IOException("Unable to find Config.properties");
