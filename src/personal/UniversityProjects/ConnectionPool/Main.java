@@ -11,7 +11,7 @@ public class Main {
         var threads = new ArrayList<MyThreads>();
 
         try {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10000; i++) {
                 PoolManager poolManager = new PoolManager();
                 MyThreads client = new MyThreads(poolManager);
                 client.setName("Client-" + i);

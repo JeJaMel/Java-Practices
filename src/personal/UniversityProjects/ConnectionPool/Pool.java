@@ -9,6 +9,7 @@ import java.util.Properties;
 
 public class Pool {
 
+    private static String CONFIG_FILE = "/personal/UniversityProjects/ConnectionPool/Config.properties";
     private static Pool instance;
     private final int INITIAL_SIZE;
     private final int MAX_SIZE;
@@ -87,7 +88,7 @@ public class Pool {
 
     private static Properties loadProps() throws IOException {
         Properties props = new Properties();
-        try (InputStream input = Pool.class.getResourceAsStream("/personal/UniversityProjects/ConnectionPool/Config.properties")) {
+        try (InputStream input = Pool.class.getResourceAsStream(CONFIG_FILE)) {
             if (input == null) {
                 throw new IOException("Unable to find Config.properties");
             }

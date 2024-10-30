@@ -19,16 +19,12 @@ public class PoolManager {
             }
 
             if (pool.getCURRENT_SIZE() < pool.getMAX_SIZE()) {
-                int connectionsToAdd = Math.min(pool.getGROWTH_SIZE(), pool.getMAX_SIZE() - pool.getCURRENT_SIZE());
-
-                for (int i = 0; i < connectionsToAdd; i++) {
+                for (int i = 0; i < pool.getGROWTH_SIZE(); i++) {
                     Connection conn = new Cnn(pool).createConnection();
                     pool.getPool().add(conn);
                 }
-
-                pool.setCURRENT_SIZE(pool.getCURRENT_SIZE() + connectionsToAdd);
-
-                System.out.println("Added " + connectionsToAdd + " connections to the pool. Current size: " + pool.getCURRENT_SIZE());
+                pool.setCURRENT_SIZE(pool.getCURRENT_SIZE() + pool.getGROWTH_SIZE());
+                System.out.println("Added " + pool.getGROWTH_SIZE() + " connections to the pool. Current size: " + pool.getCURRENT_SIZE());
             }
 
             while (pool.getPool().isEmpty()) {
