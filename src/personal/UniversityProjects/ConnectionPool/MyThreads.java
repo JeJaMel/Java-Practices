@@ -39,8 +39,10 @@ public class MyThreads extends Thread {
             connection = poolManager.getConnection();
             Statement stmt = connection.createStatement();
             resultSet = stmt.executeQuery("SELECT * FROM prod");
+            incrementSuccessfulCounter();
         } catch (Exception e) {
             e.printStackTrace();
+            incrementFailedCounter();
         } finally {
             try {
                 if (resultSet != null) resultSet.close();

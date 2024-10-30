@@ -11,12 +11,12 @@ public class Pool {
 
     private static Pool instance;
 
-    private int INITIAL_SIZE;
-    private int MAX_SIZE;
-    private int GROWTH_SIZE;
+    private final int INITIAL_SIZE;
+    private final int MAX_SIZE;
+    private final int GROWTH_SIZE;
     private int CURRENT_SIZE;
-    private String URL, USER, PASSWORD, DATABASE;
-    private LinkedList<Connection> pool;
+    private final String URL, USER, PASSWORD, DATABASE;
+    private final LinkedList<Connection> pool;
 
     private Pool(Properties prop) throws SQLException, ClassNotFoundException, IOException {
         this.INITIAL_SIZE = Integer.parseInt(prop.getProperty("INITIAL_SIZE"));
@@ -33,20 +33,13 @@ public class Pool {
         for (int i = 0; i < INITIAL_SIZE; i++) {
             pool.add(createConnection());
         }
-
     }
 
     private Connection createConnection() throws ClassNotFoundException, SQLException {
         if (CURRENT_SIZE < MAX_SIZE) {
-            Connection conn = new Cnn(this).createConnection();
-            return conn;
+            return new Cnn(this).createConnection();
         }
         throw new SQLException("Reached maximum pool size.");
-    }
-
-
-    public int getINITIAL_SIZE() {
-        return INITIAL_SIZE;
     }
 
     public int getMAX_SIZE() {

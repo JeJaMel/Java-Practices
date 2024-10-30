@@ -13,7 +13,6 @@ public class Cnn {
 
     public Connection createConnection() throws ClassNotFoundException, SQLException {
         Class.forName(pool.getDATABASE());
-
         Connection c = DriverManager.getConnection(pool.getURL(), pool.getUSER(), pool.getPASSWORD());
         System.out.println("Connection created = " + c);
         return c;
