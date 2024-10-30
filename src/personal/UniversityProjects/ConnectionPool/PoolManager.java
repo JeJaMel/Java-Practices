@@ -12,17 +12,30 @@ public class PoolManager {
         this.pool = Pool.getInstance();
     }
 
-    public Connection getConnection() throws IOException, SQLException, ClassNotFoundException {
-        Cnn connection = new Cnn(pool);
-        return connection.getConnection();
+    public Connection getConnection() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
+        synchronized (pool) {
+            if (!pool.getPool().isEmpty()) {
+                return pool.getPool().removeFirst();
+            }
+
+            if (pool.getCURRENT_SIZE() < pool.getMAX_SIZE()) {
+                Connection conn = new Cnn(pool).createConnection();
+                pool.setCURRENT_SIZE(pool.getCURRENT_SIZE() + 1);
+                return conn;
+            }
+
+            while (pool.getPool().isEmpty()) {
+                pool.wait();
+            }
+            return pool.getPool().removeFirst();
+        }
     }
 
-    public void returnConnection(Cnn connection) {
-        connection.returnConnection();
-    }
-
-    public Pool getPool() {
-        return pool;
+    public void returnConnection(Connection connection) {
+        synchronized (pool) {
+            pool.getPool().add(connection);
+            pool.notifyAll();
+        }
     }
 
 }

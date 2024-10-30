@@ -1,27 +1,54 @@
 package personal.UniversityProjects.ConnectionPool;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.*;
 
 public class MyThreads extends Thread {
 
-    private PoolManager poolManager;
+    private final PoolManager poolManager;
 
     public MyThreads(PoolManager poolManager) {
         this.poolManager = poolManager;
     }
 
+    private static int successfulCounter;
+    private static int failedCounter;
+
+    public static int getSuccessfulCounter() {
+        return successfulCounter;
+    }
+
+    public static int getFailedCounter() {
+        return failedCounter;
+    }
+
+    public static synchronized void incrementSuccessfulCounter() {
+        successfulCounter++;
+    }
+
+    public static synchronized void incrementFailedCounter() {
+        failedCounter++;
+    }
+
+
     @Override
     public void run() {
-        Cnn connection = null;
+        Connection connection = null;
+        ResultSet resultSet = null;
         try {
-            connection = new Cnn(poolManager.getPool()); // Create a new Cnn instance
-            Connection conn = connection.getConnection();
-            ResultSet rs = connection.exeQuery("SELECT * FROM prod");
-            rs.close();
-            connection.returnConnection(); // Return the connection
+            connection = poolManager.getConnection();
+            Statement stmt = connection.createStatement();
+            resultSet = stmt.executeQuery("SELECT * FROM prod");
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (connection != null) poolManager.returnConnection(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
+
