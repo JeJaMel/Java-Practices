@@ -39,7 +39,6 @@ public class PoolManager {
         }
     }
 
-
     public void returnConnection(Connection connection) {
         synchronized (pool) {
             pool.getPool().add(connection);

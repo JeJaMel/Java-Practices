@@ -10,7 +10,6 @@ import java.util.Properties;
 public class Pool {
 
     private static Pool instance;
-
     private final int INITIAL_SIZE;
     private final int MAX_SIZE;
     private final int GROWTH_SIZE;

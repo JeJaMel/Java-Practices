@@ -6,13 +6,12 @@ import java.sql.*;
 public class MyThreads extends Thread {
 
     private final PoolManager poolManager;
+    private static int successfulCounter;
+    private static int failedCounter;
 
     public MyThreads(PoolManager poolManager) {
         this.poolManager = poolManager;
     }
-
-    private static int successfulCounter;
-    private static int failedCounter;
 
     public static int getSuccessfulCounter() {
         return successfulCounter;
