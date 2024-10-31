@@ -24,9 +24,11 @@ public class Main {
             }
 
             long endTime = System.currentTimeMillis();
+            System.out.println("=".repeat(35));
             System.out.println("Successful connections: " + MyThreads.getSuccessfulCounter());
             System.out.println("Failed connections: " + MyThreads.getFailedCounter());
             System.out.println("Time taken: " + (endTime - startTime) + " ms");
+            System.out.println("=".repeat(35));
 
         } catch (IOException | SQLException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
