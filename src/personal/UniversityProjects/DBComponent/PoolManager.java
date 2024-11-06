@@ -24,7 +24,7 @@ public class PoolManager {
                     pool.getPool().add(conn);
                 }
                 pool.setCURRENT_SIZE(pool.getCURRENT_SIZE() + pool.getGROWTH_SIZE());
-                System.out.println("Added " + pool.getGROWTH_SIZE() + " connections to the pool. Current size: " + pool.getCURRENT_SIZE());
+               // System.out.println("Added " + pool.getGROWTH_SIZE() + " connections to the pool. Current size: " + pool.getCURRENT_SIZE());
             }
 
             while (pool.getPool().isEmpty()) {

@@ -16,12 +16,12 @@ public class Cnn {
         return c;
     }
 
-//    public static ResultSet exeQuery(Connection connection, String query) throws SQLException {
-//        if (connection == null || connection.isClosed()) {
-//            throw new SQLException("No connection available. Please call toConnect first.");
-//        }
-//        Statement stmt = connection.createStatement();
-//        return stmt.executeQuery(query);
-//    }
+    public static ResultSet exeQuery(Connection connection, String query) throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            throw new SQLException("No connection available. Please call toConnect first.");
+        }
+        Statement stmt = connection.createStatement();
+        return stmt.executeQuery(query);
+    }
 
 }
