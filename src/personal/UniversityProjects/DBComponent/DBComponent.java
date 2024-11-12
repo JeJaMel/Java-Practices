@@ -17,6 +17,11 @@ public class DBComponent {
         loadConfig();
     }
 
+    public DBComponent(String dbName) throws IOException, SQLException, ClassNotFoundException {
+        loadConfig();
+        initializeDatabase(dbName);
+    }
+
     private void loadConfig() throws IOException {
         try (InputStream input = getClass().getResourceAsStream(CONFIG_FILE_PATH)) {
             if (input == null) {
@@ -38,12 +43,21 @@ public class DBComponent {
         return dbProps;
     }
 
-    public void switchDatabase(String dbName) throws SQLException, ClassNotFoundException, IOException {
+    private void initializeDatabase(String dbName) throws SQLException, ClassNotFoundException, IOException {
+        if (poolManager == null) {
+            Properties dbConfig = getDBConfig(dbName);
+            System.out.println("DB Connected to Pool Successfully!");
+            this.poolManager = new PoolManager(dbConfig);
+        }
+    }
+
+    public void UseDatabase(String dbName) throws SQLException, ClassNotFoundException, IOException {
         if (poolManager != null) {
             poolManager.resetPool();
         }
 
         Properties dbConfig = getDBConfig(dbName);
+        System.out.println("DB selected successfully!");
         this.poolManager = new PoolManager(dbConfig);
     }
 

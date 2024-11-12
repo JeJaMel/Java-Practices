@@ -1,10 +1,8 @@
 package personal.UniversityProjects.DBComponent;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Scanner;
 
 public class Main {
 
@@ -16,24 +14,64 @@ public class Main {
         -Option to test the Connection Pool
         -Basic CRUD implementation
         */
-
+        boolean run = true;
+        int option;
         DBComponent db = new DBComponent();
-        db.switchDatabase("productos");
-        try {
-            Connection con = db.getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from prod");
-            rs.close();
-            stmt.close();
-            db.returnConnection(con);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Hi, welcome to the  DBComponent test!");
+        System.out.println("Please enter the name of the Db you want to connect...");
+        String dbName = sc.nextLine();
+        db.UseDatabase(dbName);
 
+        while (run) {
+            System.out.println(printMenu());
+            option = sc.nextInt();
 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            switch (option) {
+                case 1:
+
+                    break;
+
+                case 2:
+
+                    break;
+
+                case 3:
+
+                    break;
+
+                case 4:
+                    run = false;
+                    break;
+
+                default:
+                    System.out.println("Please enter a valid option!");
+                    break;
+            }
+
         }
 
-
     }
+
+    public static String printMenu() {
+        return """
+                    Please select an option below:
+                1. Execute Query (selected from Querys.properties)
+                2. Change Database
+                3. Test Connection Pool
+                4. Exit
+                
+                """;
+    }
+
+    public static String QueryMenu() {
+        return """
+                    Enter the Schema and the Query name you want to execute.
+                    (in case your db has no schemas, use public)
+                
+                """;
+    }
+
 }
 
 
