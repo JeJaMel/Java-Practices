@@ -3,13 +3,14 @@ package personal.UniversityProjects.DBComponent;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class PoolManager {
 
     private final Pool pool;
 
-    public PoolManager() throws IOException, SQLException, ClassNotFoundException {
-        this.pool = Pool.getInstance();
+    public PoolManager(Properties dbConfig) throws IOException, SQLException, ClassNotFoundException {
+        this.pool = Pool.getInstance(dbConfig);
     }
 
     public Connection getConnection() throws SQLException, ClassNotFoundException, InterruptedException {
@@ -24,7 +25,7 @@ public class PoolManager {
                     pool.getPool().add(conn);
                 }
                 pool.setCURRENT_SIZE(pool.getCURRENT_SIZE() + pool.getGROWTH_SIZE());
-               // System.out.println("Added " + pool.getGROWTH_SIZE() + " connections to the pool. Current size: " + pool.getCURRENT_SIZE());
+                 System.out.println("Added " + pool.getGROWTH_SIZE() + " connections to the pool. Current size: " + pool.getCURRENT_SIZE());
             }
 
             while (pool.getPool().isEmpty()) {
@@ -40,6 +41,10 @@ public class PoolManager {
             pool.getPool().add(connection);
             pool.notifyAll();
         }
+    }
+
+    public void resetPool() {
+        Pool.resetInstance();
     }
 
 }

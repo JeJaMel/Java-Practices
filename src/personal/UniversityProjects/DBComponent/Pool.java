@@ -1,7 +1,6 @@
 package personal.UniversityProjects.DBComponent;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -76,24 +75,32 @@ public class Pool {
         return pool;
     }
 
-    public static Pool getInstance() throws IOException, SQLException, ClassNotFoundException {
+    public static Pool getInstance(Properties props) throws IOException, SQLException, ClassNotFoundException {
         if (instance == null) {
-            Properties props = loadProps();
             instance = new Pool(props);
         }
         return instance;
     }
 
-    private static Properties loadProps() throws IOException {
-        Properties props = new Properties();
-        String CONFIG_FILE = "/personal/UniversityProjects/ConnectionPool/Config.properties";
-        try (InputStream input = Pool.class.getResourceAsStream(CONFIG_FILE)) {
-            if (input == null) {
-                throw new IOException("Unable to find Config.properties");
+    private void closeAllConnections() {
+        for (Connection conn : pool) {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
             }
-            props.load(input);
         }
-        return props;
+        pool.clear();
+        CURRENT_SIZE = 0;
+    }
+
+    public static void resetInstance() {
+        if (instance != null) {
+            instance.closeAllConnections();
+            instance = null;
+        }
     }
 
 }
