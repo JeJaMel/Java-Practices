@@ -76,7 +76,7 @@ public class DBComponent {
 
     public Connection getConnection() throws SQLException, InterruptedException, ClassNotFoundException {
         if (poolManager == null) {
-            throw new IllegalStateException("Database not selected. Call UseDatabase first.");
+            throw new IllegalStateException("Database not selected.");
         }
         return poolManager.getConnection();
     }

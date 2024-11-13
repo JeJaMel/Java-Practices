@@ -82,7 +82,6 @@ public class Main {
                         break;
                     }
 
-
                     int paramCount = sentence.length() - sentence.replace("?", "").length();
 
                     if (paramCount > 0) {
