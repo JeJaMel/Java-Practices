@@ -3,6 +3,7 @@ package personal.UniversityProjects.DBComponent;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -37,6 +38,13 @@ public class Main {
                     System.out.println("Enter the query name:");
                     String queryName = sc.nextLine();
 
+                    String sentence = db.getSentence(schema, queryName);
+
+                    if (sentence == null) {
+                        System.out.println("Error: Query not found in properties file: " + schema + "." + queryName);
+                        break;
+                    }
+
                     String[] params = db.getParameters(schema, queryName);
 
                     ResultSet rs = db.exe(schema, queryName, params);
@@ -67,14 +75,44 @@ public class Main {
                     int numThreads = sc.nextInt();
                     sc.nextLine();
 
-                    String[] params = db.getParameters(schema, queryName);
+                    String sentence = db.getSentence(schema, queryName);
+
+                    if (sentence == null) {
+                        System.out.println("Error: Query not found in properties file: " + schema + "." + queryName);
+                        break;
+                    }
+
+
+                    int paramCount = sentence.length() - sentence.replace("?", "").length();
+
+                    if (paramCount > 0) {
+                        System.out.println("Error: This query requires parameters. Please use a query without parameters for testing.");
+                        break;
+                    }
+
+                    long startTime = System.currentTimeMillis();
+                    var threads = new ArrayList<MyThreads>();
 
                     for (int i = 0; i < numThreads; i++) {
-                        MyThreads thread = new MyThreads(db, schema, queryName, params);
+                        MyThreads thread = new MyThreads(db, schema, queryName);
                         thread.start();
+                        threads.add(thread);
                     }
+
+                    for (MyThreads thread : threads) {
+                        thread.join();
+                    }
+
+                    long endTime = System.currentTimeMillis();
+                    System.out.println("=".repeat(35));
+                    System.out.println("Successful connections: " + MyThreads.getSuccessfulCounter());
+                    System.out.println("Failed connections: " + MyThreads.getFailedCounter());
+                    System.out.println("Time taken: " + (endTime - startTime) + " ms");
+                    System.out.println("=".repeat(35));
+                    MyThreads.resetCounter();
                     break;
                 }
+
 
                 case 4:
                     run = false;
@@ -96,14 +134,6 @@ public class Main {
                 2. Change Database
                 3. Test Connection Pool
                 4. Exit
-                
-                """;
-    }
-
-    public static String QueryMenu() {
-        return """
-                    Enter the Schema and the Query name you want to execute.
-                    (in case your db has no schemas, use public)
                 
                 """;
     }

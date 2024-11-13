@@ -76,7 +76,7 @@ public class DBComponent {
 
     public Connection getConnection() throws SQLException, InterruptedException, ClassNotFoundException {
         if (poolManager == null) {
-            throw new IllegalStateException("Database not selected. Call switchDatabase first.");
+            throw new IllegalStateException("Database not selected. Call UseDatabase first.");
         }
         return poolManager.getConnection();
     }
@@ -181,6 +181,4 @@ public class DBComponent {
             System.out.println();
         }
     }
-
-
 }
