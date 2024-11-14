@@ -115,7 +115,6 @@ public class DBComponent {
         return params;
     }
 
-
     public ResultSet exe(String schema, String queryName) throws SQLException, InterruptedException, ClassNotFoundException {
         String sentence = getSentence(schema, queryName);
         if (sentence == null) {
@@ -130,7 +129,7 @@ public class DBComponent {
     }
 
 
-    public ResultSet exe(String schema, String queryName, String... params) throws SQLException, InterruptedException, ClassNotFoundException {
+    public ResultSet exe(String schema, String queryName, String[] params) throws SQLException, InterruptedException, ClassNotFoundException {
         String sentence = getSentence(schema, queryName);
         if (sentence == null) {
             throw new SQLException("Query not found in properties file: " + schema + "." + queryName);
@@ -140,7 +139,14 @@ public class DBComponent {
         PreparedStatement stmt = con.prepareStatement(sentence);
 
         for (int i = 0; i < params.length; i++) {
-            stmt.setString(i + 1, params[i]);
+            String param = params[i];
+
+            try {
+                int intParam = Integer.parseInt(param);
+                stmt.setInt(i + 1, intParam);
+            } catch (NumberFormatException e) {
+                stmt.setString(i + 1, param);
+            }
         }
 
         ResultSet resultSet = null;

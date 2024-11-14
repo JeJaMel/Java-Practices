@@ -10,12 +10,6 @@ public class Main {
 
     public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
 
-        /*
-        Here in the main, I will create a mini example app to try the DBComponent Class methods.
-        -Option to change the db, from PSQL to MySQL, Different DB same main usage.
-        -Option to test the Connection Pool
-        */
-
         boolean run = true;
         int option;
         DBComponent db = new DBComponent();
