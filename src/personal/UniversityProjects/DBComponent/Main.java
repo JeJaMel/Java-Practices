@@ -10,6 +10,8 @@ public class Main {
 
     public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
 
+        //this code still needs some error handling methods
+
         boolean run = true;
         int option;
         DBComponent db = new DBComponent();
