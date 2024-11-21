@@ -7,72 +7,71 @@ import java.util.ArrayList;
 
 public class ProcessAlgorithm {
 
-    private String FILE_PATH;
+    private static String FILE_PATH;
+    private ArrayList<Integer> processes;
+    private ArrayList<Integer> initialTimeList;
+    private ArrayList<Integer> executionTimeList;
+    private int quantum;
 
-    public ProcessAlgorithm(String FILE_PATH) {
-        this.FILE_PATH = FILE_PATH;
+    public ProcessAlgorithm(String filePath) {
+        FILE_PATH = filePath;
+        loadData();
     }
 
-    public ArrayList<Integer> readInput() {
-        ArrayList<Integer> list = new ArrayList<>();
+    private void loadData() {
+        processes = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
-            br.readLine();
+            quantum = Integer.parseInt(br.readLine()
+                    .substring(br.readLine().indexOf("'") + 1, br.readLine().lastIndexOf("'"))
+                    .trim());
+
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 for (String value : values) {
                     try {
-                        list.add(Integer.parseInt(value.trim()));
+                        processes.add(Integer.parseInt(value.trim()));
                     } catch (NumberFormatException e) {
                         System.err.println("Invalid number format: " + value);
                     }
                 }
             }
+
+            initialTimeList = getInitialTime(processes);
+            executionTimeList = getExecutionTime(processes);
+
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
-        }
-        return list;
-    }
-
-    public int getQuantum() {
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line = br.readLine();
-            return Integer.parseInt(line.substring(line.indexOf("'") + 1, line.lastIndexOf("'")).trim());
         } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-            return -1;
+            System.err.println("Error processing data: " + e.getMessage());
         }
     }
 
-
-    public ArrayList<Integer> getInitialTime(ArrayList<Integer> list) {
-        ArrayList<Integer> initialTimeList = new ArrayList<>();
-
+    private ArrayList<Integer> getInitialTime(ArrayList<Integer> list) {
+        ArrayList<Integer> initialTimes = new ArrayList<>();
         for (int i = 0; i < list.size(); i += 2) {
-            initialTimeList.add(list.get(i));
+            initialTimes.add(list.get(i));
         }
-
-        return initialTimeList;
+        return initialTimes;
     }
 
-    public ArrayList<Integer> getExecutionTIme(ArrayList<Integer> list) {
-        ArrayList<Integer> executionTimeList = new ArrayList<>();
+    private ArrayList<Integer> getExecutionTime(ArrayList<Integer> list) {
+        ArrayList<Integer> executionTimes = new ArrayList<>();
         for (int i = 1; i < list.size(); i += 2) {
-            executionTimeList.add(list.get(i));
+            executionTimes.add(list.get(i));
         }
-        return executionTimeList;
+        return executionTimes;
     }
 
-    public void FirstInFirstOut(ArrayList<Integer> initialTimeList, ArrayList<Integer> executionTimeList) {
-
-    }
-
-    public void LastInFirstOut(ArrayList<Integer> initialTimeList, ArrayList<Integer> executionTimeList) {
+    public void FirstInFirstOut() {
 
     }
 
-    public void RoundRobin(ArrayList<Integer> initialTimeList, ArrayList<Integer> executionTimeList) {
+    public void LastInFirstOut() {
 
     }
 
+    public void RoundRobin() {
+
+    }
 }
