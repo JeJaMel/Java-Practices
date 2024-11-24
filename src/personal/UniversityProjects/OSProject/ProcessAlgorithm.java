@@ -4,18 +4,21 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class ProcessAlgorithm {
 
-    private static String FILE_PATH;
+    private String FILE_PATH;
     private ArrayList<Integer> processes;
     private ArrayList<Integer> initialTimeList;
     private ArrayList<Integer> executionTimeList;
+    private LinkedList<Task> taskList;
     private int quantum;
 
     public ProcessAlgorithm(String filePath) {
         FILE_PATH = filePath;
         loadData();
+        taskList = createTaskList();
     }
 
     private void loadData() {
@@ -40,6 +43,11 @@ public class ProcessAlgorithm {
             initialTimeList = getInitialTime(processes);
             executionTimeList = getExecutionTime(processes);
 
+            if (initialTimeList.size() != executionTimeList.size()) {
+                System.out.println("Both, initial time and execution time must be the same");
+                System.exit(0);
+            }
+
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         } catch (Exception e) {
@@ -63,7 +71,17 @@ public class ProcessAlgorithm {
         return executionTimes;
     }
 
+    private LinkedList<Task> createTaskList() {
+        LinkedList<Task> taskList = new LinkedList<>();
+        for (int i = 0; i < initialTimeList.size(); i++) {
+            taskList.add(new Task(initialTimeList.get(i), executionTimeList.get(i)));
+        }
+        return taskList;
+    }
+
     public void FirstInFirstOut() {
+
+
 
     }
 
@@ -72,6 +90,13 @@ public class ProcessAlgorithm {
     }
 
     public void RoundRobin() {
+        for (Task task : taskList) {
 
+            task.setTf( + task.getTd());
+            task.setT(task.getTf() - task.getTi());
+            task.setE(task.getT() - task.getTd());
+            task.setI((double) task.getTd() / task.getT());
+
+        }
     }
 }
