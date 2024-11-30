@@ -61,10 +61,6 @@ public class Task {
         return I;
     }
 
-    public int getId() {
-        return id;
-    }
-
     @Override
     public String toString() {
         return String.format("| %-4d | %-4d | %-4d | %-4d | %-4d | %-4d | %-6.2f |",
