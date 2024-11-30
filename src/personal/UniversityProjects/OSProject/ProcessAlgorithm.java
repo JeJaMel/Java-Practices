@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class ProcessAlgorithm {
@@ -87,10 +89,55 @@ public class ProcessAlgorithm {
     public void FirstInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
+        int time = 0;
+
+        if (completedTasks.isEmpty()) {
+            Task minTask = taskList.stream()
+                    .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
+                    .orElse(null);
+
+            if (minTask != null) {
+                time = minTask.getTi();
+            }
+        }
+
+        while (!taskList.isEmpty()) {
+            Iterator<Task> iterator = taskList.iterator();
+            boolean restarted = false; // bandera para saber si debemos reiniciar el bucle
+
+            while (iterator.hasNext()) {
+                Task task = iterator.next();  // Obtener la siguiente tarea
+
+                if (task.getTi() <= time) {
+                    while (task.getTd() > 0) {
+                        time++;
+                        task.setTd(task.getTd() - 1); // Reducir el tiempo de ejecución restante
+                    }
+
+                    getValues(task, time, completedTasks);
+                    iterator.remove();
+
+                    restarted = true;
+                    break;
+                }
+            }
+
+            if (restarted) {
+                continue; // Reinicia el ciclo desde el principio
+            }
+        }
+
+        printTaskResults(completedTasks);
+        System.out.println("Total Time: " + time);
     }
 
-    public void LastInFirstOut() {
 
+
+    public void LastInFirstOut() {
+        LinkedList<Task> taskList = createTaskList();
+        LinkedList<Task> completedTasks = new LinkedList<>();
+        LinkedList<Task> toRemove = new LinkedList<>();
+        int time = 0;
     }
 
     public void RoundRobin() {
@@ -134,8 +181,8 @@ public class ProcessAlgorithm {
                     // Si la tarea se completa durante el quantum
                     if (executingTask.getTd() <= 0) {
                         getValues(executingTask, time, completedTasks); // Registrar tiempo de finalización
-                        executingTask = null; // Liberar la tarea
-                        break; // Salir del bucle for si la tarea se completa
+                        executingTask = null;
+                        break;
                     }
                 }
 
