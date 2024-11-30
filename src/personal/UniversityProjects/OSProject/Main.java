@@ -8,9 +8,14 @@ public class Main {
 
         ProcessAlgorithm algorithm = new ProcessAlgorithm("src/personal/UniversityProjects/OSProject/data.csv");
 
-        //algorithm.RoundRobin();
+        int start = 0;
+        long startTime = System.currentTimeMillis();
         algorithm.FirstInFirstOut();
+        algorithm.LastInFirstOut();
+        algorithm.RoundRobin();
+        long endTime = System.currentTimeMillis();
 
+        System.out.println("Time taken: " + (endTime - startTime) + "ms");
     }
 
 }

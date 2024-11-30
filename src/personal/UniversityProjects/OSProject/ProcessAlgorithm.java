@@ -91,14 +91,12 @@ public class ProcessAlgorithm {
         LinkedList<Task> completedTasks = new LinkedList<>();
         int time = 0;
 
-        if (completedTasks.isEmpty()) {
-            Task minTask = taskList.stream()
-                    .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
-                    .orElse(null);
+        Task minTask = taskList.stream()
+                .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
+                .orElse(null);
 
-            if (minTask != null) {
-                time = minTask.getTi();
-            }
+        if (minTask != null) {
+            time = minTask.getTi();
         }
 
         while (!taskList.isEmpty()) {
@@ -136,9 +134,50 @@ public class ProcessAlgorithm {
     public void LastInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
-        LinkedList<Task> toRemove = new LinkedList<>();
         int time = 0;
+
+        if (completedTasks.isEmpty()) {
+            Task minTask = taskList.stream()
+                    .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
+                    .orElse(null);
+
+            if (minTask != null) {
+                time = minTask.getTi();
+            }
+        }
+
+        // LIFO: procesar desde el último elemento agregado
+        while (!taskList.isEmpty()) {
+            // Usamos un Iterator para recorrer la lista desde el final
+            Iterator<Task> iterator = taskList.descendingIterator();
+            boolean restarted = false; // bandera para saber si debemos reiniciar el bucle
+
+            while (iterator.hasNext()) {
+                Task task = iterator.next();  // Obtener la siguiente tarea desde el final
+
+                if (task.getTi() <= time) {
+                    while (task.getTd() > 0) {
+                        time++;
+                        task.setTd(task.getTd() - 1); // Reducir el tiempo de ejecución restante
+                    }
+
+                    getValues(task, time, completedTasks);
+                    iterator.remove(); // Eliminar la tarea procesada
+
+                    restarted = true;
+                    break; // Salir del while y reiniciar el ciclo desde el final
+                }
+            }
+
+            if (restarted) {
+                continue; // Reinicia el ciclo desde el final
+            }
+        }
+
+        printTaskResults(completedTasks);
+        System.out.println("Total Time: " + time);
     }
+
 
     public void RoundRobin() {
         LinkedList<Task> taskList = createTaskList(); // Tareas iniciales
