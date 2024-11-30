@@ -1,16 +1,20 @@
 package personal.UniversityProjects.OSProject;
 
 public class Task {
-    int ti; //Initial time
-    int td; //Duration Time
-    int tf; //Final Time
-    int T; // Total Time
-    int E; // Waiting Time
-    double I; // Service Index
+    private int id; // Identificador único
+    private int ti; // Tiempo inicial
+    private int td; // Tiempo de duración restante
+    public int originalTd; // Duración original
+    private int tf; // Tiempo final
+    private int T; // Tiempo de respuesta
+    private int E; // Tiempo de espera
+    private double I; // Índice de productividad
 
-    Task(int ti, int td) {
+    Task(int id, int ti, int td) {
+        this.id = id;
         this.ti = ti;
         this.td = td;
+        this.originalTd = td;
     }
 
     public void setTd(int td) {
@@ -57,15 +61,13 @@ public class Task {
         return I;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
-        return "Task{" +
-                "ti=" + ti +
-                ", td=" + td +
-                ", tf=" + tf +
-                ", tt=" + T +
-                ", te=" + E +
-                ", is=" + I +
-                '}';
+        return String.format("Task{id=%d ti=%d, td=%d, tf=%d, T=%d, E=%d, I=%.2f}",
+                id, ti, originalTd, tf, T, E, I);
     }
 }

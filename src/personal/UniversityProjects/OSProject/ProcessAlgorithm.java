@@ -12,23 +12,27 @@ public class ProcessAlgorithm {
     private ArrayList<Integer> processes;
     private ArrayList<Integer> initialTimeList;
     private ArrayList<Integer> executionTimeList;
-    private LinkedList<Task> taskList;
     private int quantum;
 
     public ProcessAlgorithm(String filePath) {
         FILE_PATH = filePath;
         loadData();
-        taskList = createTaskList();
     }
 
     private void loadData() {
         processes = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
-            quantum = Integer.parseInt(br.readLine()
-                    .substring(br.readLine().indexOf("'") + 1, br.readLine().lastIndexOf("'"))
-                    .trim());
 
+            // Leer el quantum en la primera línea
+            line = br.readLine();
+            if (line != null && line.startsWith("Quantum=")) {
+                quantum = Integer.parseInt(line.split("=")[1].trim());
+            } else {
+                throw new IllegalArgumentException("Quantum value missing or malformed in the input file.");
+            }
+
+            // Leer las tareas (líneas restantes)
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 for (String value : values) {
@@ -40,12 +44,13 @@ public class ProcessAlgorithm {
                 }
             }
 
+            // Separar tiempos iniciales y de ejecución
             initialTimeList = getInitialTime(processes);
             executionTimeList = getExecutionTime(processes);
 
+            // Validar tamaños
             if (initialTimeList.size() != executionTimeList.size()) {
-                System.out.println("Both, initial time and execution time must be the same");
-                System.exit(0);
+                throw new IllegalStateException("Initial time list and execution time list sizes do not match.");
             }
 
         } catch (IOException e) {
@@ -74,7 +79,7 @@ public class ProcessAlgorithm {
     private LinkedList<Task> createTaskList() {
         LinkedList<Task> taskList = new LinkedList<>();
         for (int i = 0; i < initialTimeList.size(); i++) {
-            taskList.add(new Task(initialTimeList.get(i), executionTimeList.get(i)));
+            taskList.add(new Task(i , initialTimeList.get(i), executionTimeList.get(i)));
         }
         return taskList;
     }
@@ -90,13 +95,23 @@ public class ProcessAlgorithm {
     }
 
     public void RoundRobin() {
-        for (Task task : taskList) {
+        LinkedList<Task> taskList = createTaskList(); // Tareas en general
+        LinkedList<Task> completedTasks = new LinkedList<>(); // Tareas completadas
+        LinkedList<Task> waitingTasks = new LinkedList<>(); // Tareas esperando en cola
+        LinkedList<Task> executingTask = new LinkedList<>();// Tarea ejecutandose en este momento
+        int time = 0;
 
-            task.setTf( + task.getTd());
-            task.setT(task.getTf() - task.getTi());
-            task.setE(task.getT() - task.getTd());
-            task.setI((double) task.getTd() / task.getT());
 
+
+
+        // Imprimir resultados
+        System.out.println("\nTareas completadas:");
+        for (Task task : completedTasks) {
+            System.out.println(task);
         }
+    }
+
+    public int getQuantum() {
+        return quantum;
     }
 }

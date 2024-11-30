@@ -8,6 +8,8 @@ public class Main {
 
         ProcessAlgorithm algorithm = new ProcessAlgorithm("src/personal/UniversityProjects/OSProject/data.csv");
 
+        algorithm.RoundRobin();
+
     }
 
 }
