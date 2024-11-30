@@ -79,13 +79,12 @@ public class ProcessAlgorithm {
     private LinkedList<Task> createTaskList() {
         LinkedList<Task> taskList = new LinkedList<>();
         for (int i = 0; i < initialTimeList.size(); i++) {
-            taskList.add(new Task(i , initialTimeList.get(i), executionTimeList.get(i)));
+            taskList.add(new Task(i, initialTimeList.get(i), executionTimeList.get(i)));
         }
         return taskList;
     }
 
     public void FirstInFirstOut() {
-
 
 
     }
@@ -95,78 +94,59 @@ public class ProcessAlgorithm {
     }
 
     public void RoundRobin() {
-        LinkedList<Task> taskList = createTaskList(); // Tareas en general
+        LinkedList<Task> taskList = createTaskList(); // Tareas iniciales
         LinkedList<Task> completedTasks = new LinkedList<>(); // Tareas completadas
-        LinkedList<Task> waitingTasks = new LinkedList<>(); // Tareas esperando en cola
-        LinkedList<Task> executingTask = new LinkedList<>(); // Tarea ejecutándose en este momento
-        LinkedList<Task> toRemove = new LinkedList<>(); // Tarea que se eliminará de taskList
-        int time = 0;
+        LinkedList<Task> waitingTasks = new LinkedList<>(); // Cola de espera
+        Task executingTask = null; // Tarea en ejecución
+        LinkedList<Task> toRemove = new LinkedList<>(); // Tareas a eliminar de taskList
+        int time = 0; // Tiempo inicial
 
-        while (!taskList.isEmpty() || !waitingTasks.isEmpty() || !executingTask.isEmpty()) {
-            // Ciclo para avanzar dentro de un quantum
-            for (int i = 0; i < quantum; i++) {
-                // Si executingTask está vacía, mover la primera tarea de waitingTasks a executingTask
-                if (executingTask.isEmpty() && !waitingTasks.isEmpty()) {
-                    Task nextTask = waitingTasks.poll();  // Sacar de la cabeza de la cola de espera
-                    executingTask.add(nextTask);  // Mover a executingTask
-                    System.out.println("Tarea " + nextTask.getId() + " comenzó a ejecutarse en el tiempo " + time);
+        while (!taskList.isEmpty() || !waitingTasks.isEmpty() || executingTask != null) {
+            // Revisar si alguna tarea llega en este tiempo
+            for (Task task : taskList) {
+                if (task.getTi() == time) {
+                    waitingTasks.add(task); // Agregar a la cola de espera
+                    toRemove.add(task); // Marcar para eliminar
                 }
+            }
+            taskList.removeAll(toRemove); // Limpiar las tareas ya procesadas
 
-                // Verificar si hay una tarea en ejecución
-                if (!executingTask.isEmpty()) {
-                    Task currentTask = executingTask.peek(); // Obtener la tarea que se está ejecutando actualmente
-                    currentTask.setTd(currentTask.getTd() - 1); // Reducir el tiempo de ejecución
-                    System.out.println("Tiempo " + time + ": Ejecutando tarea " + currentTask.getId() + " con td=" + currentTask.getTd());
+            // Si no hay tarea ejecutándose, tomar la siguiente de la cola de espera
+            if (executingTask == null && !waitingTasks.isEmpty()) {
+                executingTask = waitingTasks.pollFirst();
+            }
 
-                    // Si el tiempo de ejecución llega a 0, mover a completadas
-                    if (currentTask.getTd() <= 0) {
-                        // Calcular métricas cuando la tarea está completada
-                        currentTask.setTf(time); // Tiempo de finalización
-                        currentTask.setT(currentTask.getTf() - currentTask.getTi()); // Turnaround time
-                        currentTask.setE(currentTask.getT() - currentTask.originalTd); // Tiempo de espera
-                        currentTask.setI((double) currentTask.originalTd / currentTask.getT()); // Índice de penalización
-                        completedTasks.add(currentTask); // Añadir a la lista de completadas
+            // Ejecutar la tarea actual usando un bucle for para manejar el quantum
+            if (executingTask != null) {
+                for (int i = 0; i < quantum; i++) {
+                    executingTask.setTd(executingTask.getTd() - 1); // Reducir el tiempo restante en 1
+                    time++; // Incrementar tiempo en cada iteración
 
-
-                        executingTask.poll(); // Remover la tarea de executingTask
-                    }
-                }
-
-                // Mover nuevas tareas de taskList a waitingTasks o executingTask según corresponda
-                for (Task task : taskList) {
-                    if (task.getTi() == time) {
-                        if (executingTask.isEmpty()) {
-                            executingTask.add(task); // Mover a tarea en ejecución si no hay ninguna
-                            toRemove.add(task);
-                            System.out.println("Tarea " + task.getId() + " comenzó a ejecutarse en el tiempo " + time);
-                        } else {
-                            waitingTasks.add(task); // Si ya hay una en ejecución, mover a la cola de espera
-                            toRemove.add(task);
-                            System.out.println("Tarea " + task.getId() + " añadida a la cola de espera en el tiempo " + time);
+                    // Revisar si alguna tarea llega mientras se ejecuta el quantum
+                    for (Task task : taskList) {
+                        if (task.getTi() == time) {
+                            waitingTasks.add(task); // Agregar a la cola de espera
+                            toRemove.add(task); // Marcar para eliminar
                         }
                     }
-                }
+                    taskList.removeAll(toRemove); // Limpiar tareas recién procesadas
 
-                // Eliminar tareas de taskList que ya han sido movidas a espera o ejecución
-                taskList.removeAll(toRemove);
-                toRemove.clear();
-
-                // Si el quantum ha llegado al límite, mover la tarea actual al final de waitingTasks
-                if (i == quantum - 1 && !executingTask.isEmpty()) {
-                    Task executingTaskCurrent = executingTask.poll();  // Sacar de executingTask
-                    waitingTasks.add(executingTaskCurrent);  // Mover la tarea al final de waitingTasks
-                    System.out.println("Tarea " + executingTaskCurrent.getId() + " movida al final de la cola de espera en el tiempo " + time);
-
-                    // Mover la siguiente tarea a executingTask si hay alguna en waitingTasks
-                    if (!waitingTasks.isEmpty()) {
-                        Task nextTask = waitingTasks.poll();  // Sacar de la cabeza de la cola de espera
-                        executingTask.add(nextTask);  // Mover a executingTask
-                        System.out.println("Tarea " + nextTask.getId() + " comenzó a ejecutarse en el tiempo " + time);
+                    // Si la tarea se completa durante el quantum
+                    if (executingTask.getTd() <= 0) {
+                        executingTask.setTf(time); // Registrar tiempo de finalización
+                        completedTasks.add(executingTask); // Agregar a completadas
+                        executingTask = null; // Liberar la tarea
+                        break; // Salir del bucle for si la tarea se completa
                     }
                 }
 
-                // Avanzar el tiempo
-                time++;
+                // Si el quantum termina y la tarea no se completó
+                if (executingTask != null && executingTask.getTd() > 0) {
+                    waitingTasks.add(executingTask); // Volver a la cola
+                    executingTask = null; // Liberar la tarea actual
+                }
+            } else {
+                time++; // Incrementar tiempo si no hay tarea ejecutándose
             }
         }
 
@@ -178,5 +158,8 @@ public class ProcessAlgorithm {
     }
 
 
-
 }
+
+
+
+
