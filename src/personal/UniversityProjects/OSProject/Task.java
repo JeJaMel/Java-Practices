@@ -11,7 +11,7 @@ public class Task {
     private double I; // Índice de productividad
 
     Task(int id, int ti, int td) {
-        this.id = id;
+        this.id = id + 1;
         this.ti = ti;
         this.td = td;
         this.originalTd = td;
