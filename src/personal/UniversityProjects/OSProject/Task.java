@@ -67,7 +67,10 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("Task{id=%d ti=%d, td=%d, tf=%d, T=%d, E=%d, I=%.2f}",
-                id, ti, originalTd, tf, T, E, I);
+        return String.format("| %-4d | %-4d | %-4d | %-4d | %-4d | %-4d | %-6.2f |",
+                id, ti, td, tf, T, E, I);
     }
+
+
+
 }

@@ -85,8 +85,8 @@ public class ProcessAlgorithm {
     }
 
     public void FirstInFirstOut() {
-
-
+        LinkedList<Task> taskList = createTaskList();
+        LinkedList<Task> completedTasks = new LinkedList<>();
     }
 
     public void LastInFirstOut() {
@@ -149,12 +149,7 @@ public class ProcessAlgorithm {
             }
         }
 
-        // Imprimir resultados
-        System.out.println("\nTareas completadas:");
-        for (Task task : completedTasks) {
-            System.out.println(task);
-        }
-        calculateAverages(completedTasks);
+       printTaskResults(completedTasks);
     }
 
     private void getValues(Task currentTask, int time, LinkedList<Task> completedTasks){
@@ -182,9 +177,31 @@ public class ProcessAlgorithm {
         double averageE = totalE / completedTasks.size(); // Promedio de tiempos de espera
         double averageI = totalI / completedTasks.size(); // Promedio de índices de penalización
 
-        System.out.printf("Promedio de tiempos de espera (E): %.2f%n", averageE);
-        System.out.printf("Promedio de índices de servicio (I): %.2f%n", averageI);
+        System.out.printf("| Promedio de tiempos de espera (E): %-13.3f |\n", averageE);
+        System.out.printf("| Promedio de índices de servicio (I): %-11.3f |\n", averageI);
     }
+
+    private void printTaskResults(LinkedList<Task> completedTasks) {
+        // Imprimir resultados
+        System.out.println("\nTareas completadas:");
+        System.out.println("=".repeat(52)); // Imprimir barra superior
+
+        // Imprimir encabezado solo una vez
+        System.out.println(String.format("| %-4s | %-4s | %-4s | %-4s | %-4s | %-4s | %-6s |",
+                "ID", "TI", "TD", "TF", "T", "E", "I"));
+        System.out.println("=".repeat(52)); // Imprimir barra inferior
+
+        // Imprimir las tareas
+        for (Task task : completedTasks) {
+            System.out.println(task);
+        }
+        System.out.println("=".repeat(52)); // Barra inferior de la tabla
+
+        // Llamar al método de cálculo de promedios y mostrar los resultados
+        calculateAverages(completedTasks);
+        System.out.println("=".repeat(52)); // Barra inferior final
+    }
+
 
 
 }
