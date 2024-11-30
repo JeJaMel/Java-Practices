@@ -133,8 +133,7 @@ public class ProcessAlgorithm {
 
                     // Si la tarea se completa durante el quantum
                     if (executingTask.getTd() <= 0) {
-                        executingTask.setTf(time); // Registrar tiempo de finalización
-                        completedTasks.add(executingTask); // Agregar a completadas
+                        getValues(executingTask, time, completedTasks); // Registrar tiempo de finalización
                         executingTask = null; // Liberar la tarea
                         break; // Salir del bucle for si la tarea se completa
                     }
@@ -155,6 +154,36 @@ public class ProcessAlgorithm {
         for (Task task : completedTasks) {
             System.out.println(task);
         }
+        calculateAverages(completedTasks);
+    }
+
+    private void getValues(Task currentTask, int time, LinkedList<Task> completedTasks){
+        currentTask.setTf(time); // Tiempo de finalización
+        currentTask.setT(currentTask.getTf() - currentTask.getTi()); // Turnaround time
+        currentTask.setE(currentTask.getT() - currentTask.originalTd); // Tiempo de espera
+        currentTask.setI((double) currentTask.originalTd / currentTask.getT()); // Índice de penalización
+        completedTasks.add(currentTask); // Añadir a la lista de completadas
+    }
+
+    private void calculateAverages(LinkedList<Task> completedTasks) {
+        if (completedTasks.isEmpty()) {
+            System.out.println("No hay tareas completadas para calcular promedios.");
+            return;
+        }
+
+        double totalE = 0; // Suma de tiempos de espera
+        double totalI = 0; // Suma de índices de penalización
+
+        for (Task task : completedTasks) {
+            totalE += task.getE(); // Sumar tiempos de espera
+            totalI += task.getI(); // Sumar índices de servicio
+        }
+
+        double averageE = totalE / completedTasks.size(); // Promedio de tiempos de espera
+        double averageI = totalI / completedTasks.size(); // Promedio de índices de penalización
+
+        System.out.printf("Promedio de tiempos de espera (E): %.2f%n", averageE);
+        System.out.printf("Promedio de índices de servicio (I): %.2f%n", averageI);
     }
 
 
