@@ -11,7 +11,6 @@ import java.util.LinkedList;
 public class ProcessAlgorithm {
 
     private final String FILE_PATH;
-    private ArrayList<Integer> processes;
     private ArrayList<Integer> initialTimeList;
     private ArrayList<Integer> executionTimeList;
     private int quantum;
@@ -22,7 +21,7 @@ public class ProcessAlgorithm {
     }
 
     private void loadData() {
-        processes = new ArrayList<>();
+        ArrayList<Integer> processes = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
 
@@ -136,14 +135,12 @@ public class ProcessAlgorithm {
         LinkedList<Task> completedTasks = new LinkedList<>();
         int time = 0;
 
-        if (completedTasks.isEmpty()) {
-            Task minTask = taskList.stream()
-                    .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
-                    .orElse(null);
+        Task minTask = taskList.stream()
+                .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
+                .orElse(null);
 
-            if (minTask != null) {
-                time = minTask.getTi();
-            }
+        if (minTask != null) {
+            time = minTask.getTi();
         }
 
         // LIFO: procesar desde el último elemento agregado
@@ -273,8 +270,8 @@ public class ProcessAlgorithm {
         System.out.println("=".repeat(52)); // Imprimir barra superior
 
         // Imprimir encabezado solo una vez
-        System.out.println(String.format("| %-4s | %-4s | %-4s | %-4s | %-4s | %-4s | %-6s |",
-                "ID", "TI", "TD", "TF", "T", "E", "I"));
+        System.out.printf("| %-4s | %-4s | %-4s | %-4s | %-4s | %-4s | %-6s |%n",
+                "ID", "TI", "TD", "TF", "T", "E", "I");
         System.out.println("=".repeat(52)); // Imprimir barra inferior
 
         // Imprimir las tareas
@@ -287,8 +284,6 @@ public class ProcessAlgorithm {
         calculateAverages(completedTasks);
         System.out.println("=".repeat(52)); // Barra inferior final
     }
-
-
 
 }
 
