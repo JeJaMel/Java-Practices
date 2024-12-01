@@ -315,12 +315,16 @@ public class ProcessAlgorithm {
 
         times.sort(Comparator.comparingDouble(AlgorithmTime::getTime));
 
-        System.out.println("\n" + "=".repeat(52));
-        System.out.println("Best processes based on average time:");
-        for (AlgorithmTime time : times) {
-            System.out.println(time.getName() + " Average Time: " + time.getTime() + "ms");
-        }
         System.out.println("=".repeat(52));
+        System.out.println("Best processes based on average time:");
+        System.out.println("=".repeat(52));
+
+        for (AlgorithmTime time : times) {
+            System.out.printf("| %-24s | %-17.3fms |%n", time.getName(), time.getTime());
+        }
+
+        System.out.println("=".repeat(52));
+
     }
 
 }
