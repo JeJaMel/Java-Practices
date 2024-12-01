@@ -1,7 +1,7 @@
 package personal.UniversityProjects.OSProject;
 
 public class Task {
-    private int id; // Identificador único
+    private String id; // Identificador único
     private int ti; // Tiempo inicial
     private int td; // Tiempo de duración restante
     public int originalTd; // Duración original
@@ -10,8 +10,8 @@ public class Task {
     private int E; // Tiempo de espera
     private double I; // Índice de productividad
 
-    Task(int id, int ti, int td) {
-        this.id = id + 1;
+    Task(String id, int ti, int td) {
+        this.id = id;
         this.ti = ti;
         this.td = td;
         this.originalTd = td;
@@ -63,7 +63,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("| %-4d | %-4d | %-4d | %-4d | %-4d | %-4d | %-6.2f |",
+        return String.format("| %-4s | %-4d | %-4d | %-4d | %-4d | %-4d | %-6.2f |",
                 id, ti, originalTd, tf, T, E, I);
     }
 

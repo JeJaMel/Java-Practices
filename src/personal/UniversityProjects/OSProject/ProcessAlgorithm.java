@@ -11,6 +11,7 @@ import java.util.LinkedList;
 public class ProcessAlgorithm {
 
     private final String FILE_PATH;
+    private ArrayList<String> idList;
     private ArrayList<Integer> initialTimeList;
     private ArrayList<Integer> executionTimeList;
     private int quantum;
@@ -22,6 +23,8 @@ public class ProcessAlgorithm {
 
     private void loadData() {
         ArrayList<Integer> processes = new ArrayList<>();
+        ArrayList<String> tempIdList = new ArrayList<>();
+
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
 
@@ -36,18 +39,26 @@ public class ProcessAlgorithm {
             // Leer las tareas (líneas restantes)
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                for (String value : values) {
+
+                if (values.length >= 3) { // Asegurarnos de que hay al menos 3 valores
+                    tempIdList.add(values[0].trim()); // Guardar el primer elemento en idList
+
+                    // Intentar convertir los otros dos valores a enteros y agregarlos a processes
                     try {
-                        processes.add(Integer.parseInt(value.trim()));
+                        processes.add(Integer.parseInt(values[1].trim()));
+                        processes.add(Integer.parseInt(values[2].trim()));
                     } catch (NumberFormatException e) {
-                        System.err.println("Invalid number format: " + value);
+                        System.err.println("Invalid number format in line: " + line);
                     }
+                } else {
+                    System.err.println("Invalid format, skipping line: " + line);
                 }
             }
 
             // Separar tiempos iniciales y de ejecución
             initialTimeList = getInitialTime(processes);
             executionTimeList = getExecutionTime(processes);
+            idList = getId(tempIdList);
 
             // Validar tamaños
             if (initialTimeList.size() != executionTimeList.size()) {
@@ -59,6 +70,14 @@ public class ProcessAlgorithm {
         } catch (Exception e) {
             System.err.println("Error processing data: " + e.getMessage());
         }
+    }
+
+    private ArrayList<String> getId(ArrayList<String> idList) {
+        ArrayList<String> newIdList = new ArrayList<>();
+        for (String s : idList) {
+            newIdList.add(s.trim());
+        }
+        return newIdList;
     }
 
     private ArrayList<Integer> getInitialTime(ArrayList<Integer> list) {
@@ -80,7 +99,7 @@ public class ProcessAlgorithm {
     private LinkedList<Task> createTaskList() {
         LinkedList<Task> taskList = new LinkedList<>();
         for (int i = 0; i < initialTimeList.size(); i++) {
-            taskList.add(new Task(i, initialTimeList.get(i), executionTimeList.get(i)));
+            taskList.add(new Task(idList.get(i), initialTimeList.get(i), executionTimeList.get(i)));
         }
         return taskList;
     }
@@ -88,15 +107,9 @@ public class ProcessAlgorithm {
     public void FirstInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
-        int time = 0;
+        int time = getFirstTime(taskList);
 
-        Task minTask = taskList.stream()
-                .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
-                .orElse(null);
 
-        if (minTask != null) {
-            time = minTask.getTi();
-        }
 
         while (!taskList.isEmpty()) {
             Iterator<Task> iterator = taskList.iterator();
@@ -133,17 +146,8 @@ public class ProcessAlgorithm {
     public void LastInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
-        int time = 0;
+        int time = getFirstTime(taskList);
 
-        Task minTask = taskList.stream()
-                .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
-                .orElse(null);
-
-        if (minTask != null) {
-            time = minTask.getTi();
-        }
-
-        // LIFO: procesar desde el último elemento agregado
         while (!taskList.isEmpty()) {
             // Usamos un Iterator para recorrer la lista desde el final
             Iterator<Task> iterator = taskList.descendingIterator();
@@ -174,7 +178,6 @@ public class ProcessAlgorithm {
         printTaskResults(completedTasks);
         System.out.println("Total Time: " + time);
     }
-
 
     public void RoundRobin() {
         LinkedList<Task> taskList = createTaskList(); // Tareas iniciales
@@ -235,6 +238,18 @@ public class ProcessAlgorithm {
        printTaskResults(completedTasks);
     }
 
+    private int getFirstTime(LinkedList<Task> taskList){
+        int newTime = 0;
+        Task minTask = taskList.stream()
+                .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
+                .orElse(null);
+
+        if (minTask != null) {
+            newTime = minTask.getTi();
+        }
+        return newTime;
+    }
+
     private void getValues(Task currentTask, int time, LinkedList<Task> completedTasks){
         currentTask.setTf(time); // Tiempo de finalización
         currentTask.setT(currentTask.getTf() - currentTask.getTi()); // Turnaround time
@@ -249,17 +264,21 @@ public class ProcessAlgorithm {
             return;
         }
 
+        double totatT = 0; // Suma de tiempos totales
         double totalE = 0; // Suma de tiempos de espera
         double totalI = 0; // Suma de índices de penalización
 
         for (Task task : completedTasks) {
+            totatT += task.getT();
             totalE += task.getE(); // Sumar tiempos de espera
             totalI += task.getI(); // Sumar índices de servicio
         }
 
+        double averageT = totatT / completedTasks.size(); // Promedio de tiempo total
         double averageE = totalE / completedTasks.size(); // Promedio de tiempos de espera
         double averageI = totalI / completedTasks.size(); // Promedio de índices de penalización
 
+        System.out.printf("| Promedio de tiempo total (E): %-18.3f |\n", averageT);
         System.out.printf("| Promedio de tiempos de espera (E): %-13.3f |\n", averageE);
         System.out.printf("| Promedio de índices de servicio (I): %-11.3f |\n", averageI);
     }
