@@ -63,7 +63,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("| %-4s | %-4d | %-4d | %-4d | %-4d | %-4d | %-6.2f |",
+        return String.format("| %-4s | %-4d | %-4d | %-4d | %-4d | %-4d | %-6.3f |",
                 id, ti, originalTd, tf, T, E, I);
     }
 

@@ -3,10 +3,7 @@ package personal.UniversityProjects.OSProject;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 public class ProcessAlgorithm {
 
@@ -103,7 +100,7 @@ public class ProcessAlgorithm {
         return taskList;
     }
 
-    public void FirstInFirstOut() {
+    public double FirstInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
         int time = getFirstTime(taskList);
@@ -134,13 +131,13 @@ public class ProcessAlgorithm {
             }
         }
 
-        printTaskResults(completedTasks);
+        return printTaskResults(completedTasks);
 
     }
 
 
 
-    public void LastInFirstOut() {
+    public double LastInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
         int time = getFirstTime(taskList);
@@ -172,10 +169,10 @@ public class ProcessAlgorithm {
             }
         }
 
-        printTaskResults(completedTasks);
+        return printTaskResults(completedTasks);
     }
 
-    public void RoundRobin() {
+    public double RoundRobin() {
         LinkedList<Task> taskList = createTaskList(); // Tareas iniciales
         LinkedList<Task> completedTasks = new LinkedList<>(); // Tareas completadas
         LinkedList<Task> waitingTasks = new LinkedList<>(); // Cola de espera
@@ -231,7 +228,7 @@ public class ProcessAlgorithm {
             }
         }
 
-       printTaskResults(completedTasks);
+       return printTaskResults(completedTasks);
     }
 
     private int getFirstTime(LinkedList<Task> taskList){
@@ -254,11 +251,7 @@ public class ProcessAlgorithm {
         completedTasks.add(currentTask); // Añadir a la lista de completadas
     }
 
-    private void calculateAverages(LinkedList<Task> completedTasks) {
-        if (completedTasks.isEmpty()) {
-            System.out.println("No hay tareas completadas para calcular promedios.");
-            return;
-        }
+    private double calculateAverages(LinkedList<Task> completedTasks) {
 
         double totatT = 0; // Suma de tiempos totales
         double totalE = 0; // Suma de tiempos de espera
@@ -274,12 +267,14 @@ public class ProcessAlgorithm {
         double averageE = totalE / completedTasks.size(); // Promedio de tiempos de espera
         double averageI = totalI / completedTasks.size(); // Promedio de índices de penalización
 
-        System.out.printf("| Promedio de tiempo total (E): %-18.3f |\n", averageT);
+        System.out.printf("| Promedio de tiempo total (T): %-18.3f |\n", averageT);
         System.out.printf("| Promedio de tiempos de espera (E): %-13.3f |\n", averageE);
         System.out.printf("| Promedio de índices de servicio (I): %-11.3f |\n", averageI);
+
+        return averageT;
     }
 
-    private void printTaskResults(LinkedList<Task> completedTasks) {
+    private double printTaskResults(LinkedList<Task> completedTasks) {
         System.out.println("\nTareas completadas:");
         System.out.println("=".repeat(52));
 
@@ -292,10 +287,40 @@ public class ProcessAlgorithm {
         }
         System.out.println("=".repeat(52));
 
-        calculateAverages(completedTasks);
+        double averageT = calculateAverages(completedTasks);
         System.out.println("=".repeat(52));
+        return averageT;
     }
 
+    public void compareProcesses() {
+        long startTimeFIFO = System.currentTimeMillis();
+        double fifo = FirstInFirstOut();
+        long endTimeFIFO = System.currentTimeMillis();
+        System.out.println("FirstInFirstOut Time: " + (endTimeFIFO - startTimeFIFO) + "ms");
 
+        long startTimeLIFO = System.currentTimeMillis();
+        double lifo = LastInFirstOut();
+        long endTimeLIFO = System.currentTimeMillis();
+        System.out.println("LastInFirstOut Time: " + (endTimeLIFO - startTimeLIFO) + "ms");
+
+        long startTimeRR = System.currentTimeMillis();
+        double roundRobin = RoundRobin();
+        long endTimeRR = System.currentTimeMillis();
+        System.out.println("RoundRobin Time: " + (endTimeRR - startTimeRR) + "ms");
+
+        List<AlgorithmTime> times = new ArrayList<>();
+        times.add(new AlgorithmTime("FirstInFirstOut", fifo));
+        times.add(new AlgorithmTime("LastInFirstOut", lifo));
+        times.add(new AlgorithmTime("RoundRobin", roundRobin));
+
+        times.sort(Comparator.comparingDouble(AlgorithmTime::getTime));
+
+        System.out.println("\n" + "=".repeat(52));
+        System.out.println("Best processes based on average time:");
+        for (AlgorithmTime time : times) {
+            System.out.println(time.getName() + " Average Time: " + time.getTime() + "ms");
+        }
+        System.out.println("=".repeat(52));
+    }
 
 }
