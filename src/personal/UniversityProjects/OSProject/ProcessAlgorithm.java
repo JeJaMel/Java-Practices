@@ -55,7 +55,6 @@ public class ProcessAlgorithm {
                 }
             }
 
-            // Separar tiempos iniciales y de ejecución
             initialTimeList = getInitialTime(processes);
             executionTimeList = getExecutionTime(processes);
             idList = getId(tempIdList);
@@ -109,8 +108,6 @@ public class ProcessAlgorithm {
         LinkedList<Task> completedTasks = new LinkedList<>();
         int time = getFirstTime(taskList);
 
-
-
         while (!taskList.isEmpty()) {
             Iterator<Task> iterator = taskList.iterator();
             boolean restarted = false; // bandera para saber si debemos reiniciar el bucle
@@ -138,7 +135,7 @@ public class ProcessAlgorithm {
         }
 
         printTaskResults(completedTasks);
-        System.out.println("Total Time: " + time);
+
     }
 
 
@@ -176,7 +173,6 @@ public class ProcessAlgorithm {
         }
 
         printTaskResults(completedTasks);
-        System.out.println("Total Time: " + time);
     }
 
     public void RoundRobin() {
@@ -284,28 +280,22 @@ public class ProcessAlgorithm {
     }
 
     private void printTaskResults(LinkedList<Task> completedTasks) {
-        // Imprimir resultados
         System.out.println("\nTareas completadas:");
-        System.out.println("=".repeat(52)); // Imprimir barra superior
+        System.out.println("=".repeat(52));
 
-        // Imprimir encabezado solo una vez
         System.out.printf("| %-4s | %-4s | %-4s | %-4s | %-4s | %-4s | %-6s |%n",
                 "ID", "TI", "TD", "TF", "T", "E", "I");
-        System.out.println("=".repeat(52)); // Imprimir barra inferior
+        System.out.println("=".repeat(52));
 
-        // Imprimir las tareas
         for (Task task : completedTasks) {
             System.out.println(task);
         }
-        System.out.println("=".repeat(52)); // Barra inferior de la tabla
+        System.out.println("=".repeat(52));
 
-        // Llamar al método de cálculo de promedios y mostrar los resultados
         calculateAverages(completedTasks);
-        System.out.println("=".repeat(52)); // Barra inferior final
+        System.out.println("=".repeat(52));
     }
 
+
+
 }
-
-
-
-
