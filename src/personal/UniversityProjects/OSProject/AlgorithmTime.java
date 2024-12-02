@@ -1,8 +1,9 @@
 package personal.UniversityProjects.OSProject;
 
+//class to compare processes
 public class AlgorithmTime {
-    private String name;
-    private double time;
+    private final String name;
+    private final double time;
 
     public AlgorithmTime(String name, double time) {
         this.name = name;

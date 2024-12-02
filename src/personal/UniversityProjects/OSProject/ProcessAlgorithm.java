@@ -25,7 +25,7 @@ public class ProcessAlgorithm {
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
 
-            // Leer el quantum en la primera línea
+            //Read quantum at line 1
             line = br.readLine();
             if (line != null && line.startsWith("Quantum=")) {
                 quantum = Integer.parseInt(line.split("=")[1].trim());
@@ -33,14 +33,13 @@ public class ProcessAlgorithm {
                 throw new IllegalArgumentException("Quantum value missing or malformed in the input file.");
             }
 
-            // Leer las tareas (líneas restantes)
+            //Read Task's
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
 
-                if (values.length >= 3) { // Asegurarnos de que hay al menos 3 valores
-                    tempIdList.add(values[0].trim()); // Guardar el primer elemento en idList
+                if (values.length >= 3) {
+                    tempIdList.add(values[0].trim());
 
-                    // Intentar convertir los otros dos valores a enteros y agregarlos a processes
                     try {
                         processes.add(Integer.parseInt(values[1].trim()));
                         processes.add(Integer.parseInt(values[2].trim()));
@@ -52,11 +51,11 @@ public class ProcessAlgorithm {
                 }
             }
 
+            //set all the list's
             initialTimeList = getInitialTime(processes);
             executionTimeList = getExecutionTime(processes);
             idList = getId(tempIdList);
 
-            // Validar tamaños
             if (initialTimeList.size() != executionTimeList.size()) {
                 throw new IllegalStateException("Initial time list and execution time list sizes do not match.");
             }
@@ -68,6 +67,7 @@ public class ProcessAlgorithm {
         }
     }
 
+    //Get an ArrayList with the id's
     private ArrayList<String> getId(ArrayList<String> idList) {
         ArrayList<String> newIdList = new ArrayList<>();
         for (String s : idList) {
@@ -76,6 +76,7 @@ public class ProcessAlgorithm {
         return newIdList;
     }
 
+    //get an ArrayList with the initial time
     private ArrayList<Integer> getInitialTime(ArrayList<Integer> list) {
         ArrayList<Integer> initialTimes = new ArrayList<>();
         for (int i = 0; i < list.size(); i += 2) {
@@ -84,6 +85,7 @@ public class ProcessAlgorithm {
         return initialTimes;
     }
 
+    //get an ArrayList with the execution time
     private ArrayList<Integer> getExecutionTime(ArrayList<Integer> list) {
         ArrayList<Integer> executionTimes = new ArrayList<>();
         for (int i = 1; i < list.size(); i += 2) {
@@ -92,6 +94,7 @@ public class ProcessAlgorithm {
         return executionTimes;
     }
 
+    //create the Linked list of type Task, with the values got from loadData method
     private LinkedList<Task> createTaskList() {
         LinkedList<Task> taskList = new LinkedList<>();
         for (int i = 0; i < initialTimeList.size(); i++) {
@@ -100,141 +103,66 @@ public class ProcessAlgorithm {
         return taskList;
     }
 
-    public double FirstInFirstOut() {
+    //Fifo process schedule
+    public double firstInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
         int time = getFirstTime(taskList);
 
         while (!taskList.isEmpty()) {
             Iterator<Task> iterator = taskList.iterator();
-            boolean restarted = false; // bandera para saber si debemos reiniciar el bucle
-
-            while (iterator.hasNext()) {
-                Task task = iterator.next();  // Obtener la siguiente tarea
-
-                if (task.getTi() <= time) {
-                    while (task.getTd() > 0) {
-                        time++;
-                        task.setTd(task.getTd() - 1); // Reducir el tiempo de ejecución restante
-                    }
-
-                    getValues(task, time, completedTasks);
-                    iterator.remove();
-
-                    restarted = true;
-                    break;
-                }
-            }
-
-            if (restarted) {
-                continue; // Reinicia el ciclo desde el principio
-            }
+            time = process(completedTasks, time, iterator);
         }
 
         return printTaskResults(completedTasks);
 
     }
 
-
-
-    public double LastInFirstOut() {
+    //Lifo process schedule
+    public double lastInFirstOut() {
         LinkedList<Task> taskList = createTaskList();
         LinkedList<Task> completedTasks = new LinkedList<>();
         int time = getFirstTime(taskList);
 
         while (!taskList.isEmpty()) {
-            // Usamos un Iterator para recorrer la lista desde el final
+            //as we want to use lifo, we use a descending iterator
             Iterator<Task> iterator = taskList.descendingIterator();
-            boolean restarted = false; // bandera para saber si debemos reiniciar el bucle
-
-            while (iterator.hasNext()) {
-                Task task = iterator.next();  // Obtener la siguiente tarea desde el final
-
-                if (task.getTi() <= time) {
-                    while (task.getTd() > 0) {
-                        time++;
-                        task.setTd(task.getTd() - 1); // Reducir el tiempo de ejecución restante
-                    }
-
-                    getValues(task, time, completedTasks);
-                    iterator.remove(); // Eliminar la tarea procesada
-
-                    restarted = true;
-                    break; // Salir del while y reiniciar el ciclo desde el final
-                }
-            }
-
-            if (restarted) {
-                continue; // Reinicia el ciclo desde el final
-            }
+            time = process(completedTasks, time, iterator);
         }
 
         return printTaskResults(completedTasks);
     }
 
-    public double RoundRobin() {
-        LinkedList<Task> taskList = createTaskList(); // Tareas iniciales
-        LinkedList<Task> completedTasks = new LinkedList<>(); // Tareas completadas
-        LinkedList<Task> waitingTasks = new LinkedList<>(); // Cola de espera
-        Task executingTask = null; // Tarea en ejecución
-        LinkedList<Task> toRemove = new LinkedList<>(); // Tareas a eliminar de taskList
-        int time = 0; // Tiempo inicial
-
-        while (!taskList.isEmpty() || !waitingTasks.isEmpty() || executingTask != null) {
-            // Revisar si alguna tarea llega en este tiempo
-            for (Task task : taskList) {
-                if (task.getTi() == time) {
-                    waitingTasks.add(task); // Agregar a la cola de espera
-                    toRemove.add(task); // Marcar para eliminar
-                }
-            }
-            taskList.removeAll(toRemove); // Limpiar las tareas ya procesadas
-
-            // Si no hay tarea ejecutándose, tomar la siguiente de la cola de espera
-            if (executingTask == null && !waitingTasks.isEmpty()) {
-                executingTask = waitingTasks.pollFirst();
-            }
-
-            // Ejecutar la tarea actual usando un bucle for para manejar el quantum
-            if (executingTask != null) {
-                for (int i = 0; i < quantum; i++) {
-                    executingTask.setTd(executingTask.getTd() - 1); // Reducir el tiempo restante en 1
-                    time++; // Incrementar tiempo en cada iteración
-
-                    // Revisar si alguna tarea llega mientras se ejecuta el quantum
-                    for (Task task : taskList) {
-                        if (task.getTi() == time) {
-                            waitingTasks.add(task); // Agregar a la cola de espera
-                            toRemove.add(task); // Marcar para eliminar
-                        }
-                    }
-                    taskList.removeAll(toRemove); // Limpiar tareas recién procesadas
-
-                    // Si la tarea se completa durante el quantum
-                    if (executingTask.getTd() <= 0) {
-                        getValues(executingTask, time, completedTasks); // Registrar tiempo de finalización
-                        executingTask = null;
-                        break;
-                    }
+    //process uses a normal or a descending iterator depending on if you want to execute fifo or lifo
+    private int process(LinkedList<Task> completedTasks, int time, Iterator<Task> iterator) {
+        boolean restarted = false;
+        while (iterator.hasNext()) {
+            Task task = iterator.next();
+            if (task.getTi() <= time) {
+                while (task.getTd() > 0) {
+                    time++;
+                    task.setTd(task.getTd() - 1); //simulate process the task
                 }
 
-                // Si el quantum termina y la tarea no se completó
-                if (executingTask != null && executingTask.getTd() > 0) {
-                    waitingTasks.add(executingTask); // Volver a la cola
-                    executingTask = null; // Liberar la tarea actual
-                }
-            } else {
-                time++; // Incrementar tiempo si no hay tarea ejecutándose
+                getValues(task, time, completedTasks);
+                iterator.remove();
+
+                restarted = true;
+                break;
             }
         }
 
-       return printTaskResults(completedTasks);
+        if (restarted) {
+            return time;
+        }
+        return time;
     }
 
-    private int getFirstTime(LinkedList<Task> taskList){
+    //get the lowest and first ti
+    private int getFirstTime(LinkedList<Task> taskList) {
         int newTime = 0;
         Task minTask = taskList.stream()
-                .min(Comparator.comparingInt(Task::getTi)) // Ordena por TI y obtiene el menor
+                .min(Comparator.comparingInt(Task::getTi))
                 .orElse(null);
 
         if (minTask != null) {
@@ -243,29 +171,87 @@ public class ProcessAlgorithm {
         return newTime;
     }
 
-    private void getValues(Task currentTask, int time, LinkedList<Task> completedTasks){
-        currentTask.setTf(time); // Tiempo de finalización
-        currentTask.setT(currentTask.getTf() - currentTask.getTi()); // Turnaround time
-        currentTask.setE(currentTask.getT() - currentTask.originalTd); // Tiempo de espera
-        currentTask.setI((double) currentTask.originalTd / currentTask.getT()); // Índice de penalización
-        completedTasks.add(currentTask); // Añadir a la lista de completadas
+    //Round Robin process schedule
+    public double roundRobin() {
+        LinkedList<Task> taskList = createTaskList();
+        LinkedList<Task> completedTasks = new LinkedList<>();
+        LinkedList<Task> waitingTasks = new LinkedList<>();
+        Task executingTask = null;
+        LinkedList<Task> toRemove = new LinkedList<>();
+        int time = 0;
+
+        while (!taskList.isEmpty() || !waitingTasks.isEmpty() || executingTask != null) {
+            //get the lowest ti to add it to the waiting list queue
+            for (Task task : taskList) {
+                if (task.getTi() == time) {
+                    waitingTasks.add(task);
+                    toRemove.add(task);
+                }
+            }
+            taskList.removeAll(toRemove);
+
+            if (executingTask == null && !waitingTasks.isEmpty()) {
+                executingTask = waitingTasks.pollFirst();
+            }
+
+            if (executingTask != null) {
+                for (int i = 0; i < quantum; i++) {
+                    executingTask.setTd(executingTask.getTd() - 1);
+                    time++;
+
+                    //check if any new task  comes during quantum period
+                    for (Task task : taskList) {
+                        if (task.getTi() == time) {
+                            waitingTasks.add(task);
+                            toRemove.add(task);
+                        }
+                    }
+                    taskList.removeAll(toRemove);
+
+                    //if task completed during quantum period
+                    if (executingTask.getTd() <= 0) {
+                        getValues(executingTask, time, completedTasks);
+                        executingTask = null;
+                        break;
+                    }
+                }
+
+                //If the task still needs more time, it returns it to the waiting list queue.
+                if (executingTask != null && executingTask.getTd() > 0) {
+                    waitingTasks.add(executingTask); // Volver a la cola
+                    executingTask = null; // Liberar la tarea actual
+                }
+            } else {
+                time++;
+            }
+        }
+
+        return printTaskResults(completedTasks);
+    }
+
+    private void getValues(Task currentTask, int time, LinkedList<Task> completedTasks) {
+        currentTask.setTf(time);
+        currentTask.setT(currentTask.getTf() - currentTask.getTi());
+        currentTask.setE(currentTask.getT() - currentTask.originalTd);
+        currentTask.setI((double) currentTask.originalTd / currentTask.getT());
+        completedTasks.add(currentTask);
     }
 
     private double calculateAverages(LinkedList<Task> completedTasks) {
-
-        double totatT = 0; // Suma de tiempos totales
-        double totalE = 0; // Suma de tiempos de espera
-        double totalI = 0; // Suma de índices de penalización
+        double totatT = 0;
+        double totalE = 0;
+        double totalI = 0;
 
         for (Task task : completedTasks) {
             totatT += task.getT();
-            totalE += task.getE(); // Sumar tiempos de espera
-            totalI += task.getI(); // Sumar índices de servicio
+            totalE += task.getE();
+            totalI += task.getI();
         }
 
-        double averageT = totatT / completedTasks.size(); // Promedio de tiempo total
-        double averageE = totalE / completedTasks.size(); // Promedio de tiempos de espera
-        double averageI = totalI / completedTasks.size(); // Promedio de índices de penalización
+        //Get required averages
+        double averageT = totatT / completedTasks.size();
+        double averageE = totalE / completedTasks.size();
+        double averageI = totalI / completedTasks.size();
 
         System.out.printf("| Promedio de tiempo total (T): %-18.3f |\n", averageT);
         System.out.printf("| Promedio de tiempos de espera (E): %-13.3f |\n", averageE);
@@ -294,17 +280,17 @@ public class ProcessAlgorithm {
 
     public void compareProcesses() {
         long startTimeFIFO = System.currentTimeMillis();
-        double fifo = FirstInFirstOut();
+        double fifo = firstInFirstOut();
         long endTimeFIFO = System.currentTimeMillis();
         System.out.println("FirstInFirstOut Time: " + (endTimeFIFO - startTimeFIFO) + "ms");
 
         long startTimeLIFO = System.currentTimeMillis();
-        double lifo = LastInFirstOut();
+        double lifo = lastInFirstOut();
         long endTimeLIFO = System.currentTimeMillis();
         System.out.println("LastInFirstOut Time: " + (endTimeLIFO - startTimeLIFO) + "ms");
 
         long startTimeRR = System.currentTimeMillis();
-        double roundRobin = RoundRobin();
+        double roundRobin = roundRobin();
         long endTimeRR = System.currentTimeMillis();
         System.out.println("RoundRobin Time: " + (endTimeRR - startTimeRR) + "ms");
 
@@ -320,7 +306,7 @@ public class ProcessAlgorithm {
         System.out.println("=".repeat(52));
 
         for (AlgorithmTime time : times) {
-            System.out.printf("| %-24s | %-17.3fms |%n", time.getName(), time.getTime());
+            System.out.printf("| %-24s | %-19.3fms |%n", time.getName(), time.getTime());
         }
 
         System.out.println("=".repeat(52));
